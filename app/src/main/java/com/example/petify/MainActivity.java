@@ -3,6 +3,7 @@ package com.example.petify;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +26,7 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
         AppEventsLogger.activateApp(this);
 
         // Check for Internet permissions
-        // TODO este permiso ya viene por default en los ultimos androids. Sin embargo, pareceria ser la solucion que todos dicen para
-        // que el metodo useLoginInformation de mas abajo no termine tirando error, si tan solo entrara en el if...
         if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.INTERNET}, INTERNET_PERMISSION);
         }
@@ -96,27 +96,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void useLoginInformation(AccessToken accessToken) {
-        // TODO esto tira el siguiente error de hostname
-        // java.net.UnknownHostException: Unable to resolve host "graph.facebook.com": No address associated with hostname
-//        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-//            @Override
-//            public void onCompleted(JSONObject object, GraphResponse response) {
-//                try {
-//                    String name = object.getString("name");
-//                    String email = object.getString("email");
-//                    String image = object.getJSONObject("picture").getJSONObject("data").getString("url");
-//                    displayName.setText(name);
-//                    emailId.setText(email);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        // Parameter setting with Bundle
-//        Bundle parameters = new Bundle();
-//        parameters.putString("fields", "id,name,picture.width(200)");
-//        request.setParameters(parameters);
-//        request.executeAsync();
+        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                try {
+                    String name = object.getString("name");
+                    displayName.setText(name);
+                    String image = object.getJSONObject("picture").getJSONObject("data").getString("url");
+                    new DownloadImageTask(displayImage).execute(image);
+                    //String email = object.getString("email");
+                    //emailId.setText(email);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // Parameter setting with Bundle
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,picture.width(200)");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 }
