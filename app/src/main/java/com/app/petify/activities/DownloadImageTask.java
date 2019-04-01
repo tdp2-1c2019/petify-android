@@ -1,4 +1,4 @@
-package com.example.petify;
+package com.app.petify.activities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
