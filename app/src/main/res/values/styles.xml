@@ -23,4 +23,10 @@
         <item name="android:textColor">@color/dark</item>
     </style>
 
+    <style name="Subtitle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/ps_bold</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">@color/dark</item>
+    </style>
+
 </resources>
