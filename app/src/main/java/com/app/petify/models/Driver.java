@@ -3,7 +3,7 @@ package com.app.petify.models;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Driver {
+public class Driver implements User{
     public String facebookId;
     public String name;
 

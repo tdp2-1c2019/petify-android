@@ -1,6 +1,8 @@
 package com.app.petify.models.responses;
 
-public class ServiceResponse<T>{
+import com.app.petify.models.User;
+
+public class UserResponse<T extends User>{
 
     public enum ServiceStatusCode {
         SUCCESS, UNAUTHORIZED, ERROR, CONFLICT
@@ -9,11 +11,11 @@ public class ServiceResponse<T>{
     private ServiceStatusCode statusCode;
     private T serviceResponse;
 
-    public ServiceResponse(ServiceStatusCode statusCode){
+    public UserResponse(ServiceStatusCode statusCode){
         this(statusCode, null);
     }
 
-    public ServiceResponse(ServiceStatusCode statusCode, T serviceResponse){
+    public UserResponse(ServiceStatusCode statusCode, T serviceResponse){
         this.statusCode = statusCode;
         this.serviceResponse = serviceResponse;
     }

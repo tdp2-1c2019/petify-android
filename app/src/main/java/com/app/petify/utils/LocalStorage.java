@@ -7,7 +7,11 @@ public class LocalStorage {
 
     private static Client client;
     private static Driver driver;
+    private static String facebookId;
 
+    public static String getFacebookId() { return LocalStorage.facebookId; }
+
+    public static void setFacebookId(String facebookId) {LocalStorage.facebookId = facebookId;}
 
     public static void setClient(Client client) {
         LocalStorage.client = client;
