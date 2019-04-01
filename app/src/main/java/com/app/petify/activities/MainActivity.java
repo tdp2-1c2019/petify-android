@@ -100,8 +100,6 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         String facebookId = object.has("id") ? object.getString("id") : "";
                         String name = object.has("name") ? object.getString("name") : "";
-                        String image = object.getJSONObject("picture").getJSONObject("data").getString("url");
-                        //new DownloadImageTask(displayImage).execute(image);
 
                         new FacebookLoginClientTask().execute(facebookId, name);
 

@@ -10,7 +10,7 @@ public class Client {
     public static Client fromJsonObject(JSONObject clientJson) throws JSONException {
         Client client = new Client();
         client.facebookId = clientJson.getString("facebook_id");
-        client.name = clientJson.has("name") ? clientJson.getString("name") : "";
+        client.name = clientJson.has("full_name") ? clientJson.getString("full_name") : "";
         return client;
     }
 
