@@ -2,6 +2,7 @@ package com.app.petify.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import com.app.petify.R;
 public class ClientHomeActivity extends AppCompatActivity {
 
     private Button logoutButton;
+    private FloatingActionButton fabButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,15 @@ public class ClientHomeActivity extends AppCompatActivity {
                 LoginManager.getInstance().logOut();
                 Intent navigationIntent = new Intent(ClientHomeActivity.this, MainActivity.class);
                 startActivity(navigationIntent);
+            }
+        });
+
+        fabButton = findViewById(R.id.floatingActionButton3);
+        fabButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ClientHomeActivity.this, NewTripActivity.class);
+                startActivity(i);
             }
         });
     }

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -29,4 +29,10 @@
         <item name="android:textColor">@color/dark</item>
     </style>
 
+    <style name="Textbox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="colorAccent">@color/dark</item>
+        <item name="boxStrokeColor">@color/white</item>
+        <item name="boxStrokeWidth">2dp</item>
+    </style>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/dark</color>
 </resources>
