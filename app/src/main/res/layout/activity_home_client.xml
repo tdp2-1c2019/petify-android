@@ -8,11 +8,44 @@
     tools:context="com.app.petify.activities.ClientHomeActivity">
 
     <TextView
+        android:id="@+id/subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/home_client_name"
-        android:theme="@style/Title"
-        android:layout_centerHorizontal="true"/>
+        android:layout_marginLeft="80px"
+        android:layout_marginTop="50px"
+        android:text="Mis viajes"
+        android:theme="@style/Title" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="50px"
+        android:layout_marginTop="50px"
+        android:layout_marginEnd="50px"
+        android:layout_marginBottom="50px"
+        android:backgroundTint="@android:color/transparent"
+        android:drawableTop="@mipmap/ic_three_dots"
+        android:stateListAnimator="@null"
+        android:paddingTop="50px"/>
+
+    <Button
+        android:id="@+id/actual"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:layout_below="@id/subtitle"
+        android:layout_margin="30px"
+        android:backgroundTint="@color/red"
+        android:text="ver viaje actual"
+        android:textColor="@color/white" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/actual"
+        android:layout_marginTop="11dp" />
 
     <TextView
         android:id="@+id/display_name"
@@ -23,24 +56,24 @@
 
     <Button
         android:id="@+id/logout_button"
-        android:text="@string/home_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/_10sdp"
-        android:layout_centerHorizontal="true" />
+        android:text="@string/home_logout" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButton3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginRight="30dp"
         android:layout_marginBottom="30dp"
+        android:clickable="true"
+        android:tint="@color/dark"
         app:backgroundTint="@color/white"
-        app:srcCompat="@android:drawable/ic_input_add"
-        android:tint="@color/dark"/>
+        app:srcCompat="@android:drawable/ic_input_add" />
 
 </RelativeLayout>
