@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.app.petify.R;
 import com.app.petify.models.Client;
@@ -22,10 +22,10 @@ public class UserTypeSelectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_type_selection);
 
-        Button clientTypeButton = this.findViewById(R.id.client_type_button);
+        ImageButton clientTypeButton = this.findViewById(R.id.client_type_button);
         clientTypeButton.setOnClickListener(new ClientTypeButtonHandler());
 
-        Button driverTypeButton = this.findViewById(R.id.driver_type_button);
+        ImageButton driverTypeButton = this.findViewById(R.id.driver_type_button);
         driverTypeButton.setOnClickListener(new DriverTypeButtonHandler());
     }
 

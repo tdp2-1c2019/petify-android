@@ -5,10 +5,12 @@
     <string name="home_driver_name">Home Chofer</string>
     <string name="home_logout">LogOut</string>
 
+    <string name="driver_button">Driver button</string>
+    <string name="client_button">Client button</string>
+    <string name="user_selection_hint">¿Sos chofer o pasajero?</string>
+
     <string name="facebook_app_id">307179333289046</string>
     <string name="fb_login_protocol_scheme">fb307179333289046</string>
     <string name="error_invalid_login">Ocurrio un error durante el Facebook login</string>
-    <string name="client_type_button_text">Quiero viajar!</string>
-    <string name="driver_type_button_text">Quiero manejar!</string>
     <string name="title_activity_maps">Map</string>
 </resources>
