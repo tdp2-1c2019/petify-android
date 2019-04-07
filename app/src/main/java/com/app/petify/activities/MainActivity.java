@@ -27,6 +27,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -38,12 +39,12 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
     public CallbackManager callbackManager;
 
-    private LoginButton loginButton;
-
     private int INTERNET_PERMISSION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LoginButton loginButton;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         request.executeAsync();
     }
 
-    protected class FacebookLoginTask extends AsyncTask<String, Void, UserResponse> {
+    private class FacebookLoginTask extends AsyncTask<String, Void, UserResponse> {
         private AuthenticationService authenticationService = new AuthenticationService();
         private Snackbar snackbar;
 
@@ -148,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.login_button).setEnabled(false);
         }
 
-        public FacebookLoginTask() {
-            this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Iniciando sesion...", Snackbar.LENGTH_INDEFINITE);
+        FacebookLoginTask() {
+            this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Iniciando sesion en Petify...", Snackbar.LENGTH_INDEFINITE);
         }
 
         protected UserResponse doInBackground(String... params) {
@@ -165,10 +166,10 @@ public class MainActivity extends AppCompatActivity {
             if (statusCode == UserResponse.ServiceStatusCode.SUCCESS){
                 User userResponse = response.getServiceResponse();
                 if (userResponse instanceof Client){
-                    Intent navigationIntent = new Intent(MainActivity.this, ClientHomeActivity.class);
+                    Intent navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
                     startActivity(navigationIntent);
                 } else if (userResponse instanceof Driver){
-                    Intent navigationIntent = new Intent(MainActivity.this, ClientHomeActivity.class);
+                    Intent navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
                     startActivity(navigationIntent);
                 }
             } else {
@@ -178,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected class FacebookRetrieveSessionTask extends AsyncTask<String, Void, UserResponse> {
+    private class FacebookRetrieveSessionTask extends AsyncTask<String, Void, UserResponse> {
         private AuthenticationService authenticationService = new AuthenticationService();
         private Snackbar snackbar;
 
@@ -187,8 +188,8 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.login_button).setEnabled(false);
         }
 
-        public FacebookRetrieveSessionTask() {
-            this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Iniciando sesion...", Snackbar.LENGTH_INDEFINITE);
+        FacebookRetrieveSessionTask() {
+            this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Obteniendo sesion de Petify...", Snackbar.LENGTH_INDEFINITE);
         }
 
         protected UserResponse doInBackground(String... params) {
@@ -199,21 +200,19 @@ public class MainActivity extends AppCompatActivity {
             this.snackbar.dismiss();
             findViewById(R.id.login_button).setEnabled(true);
 
-            TextView loginResult = findViewById(R.id.loginResult);
-
             UserResponse.ServiceStatusCode statusCode = response.getStatusCode();
             if (statusCode == UserResponse.ServiceStatusCode.SUCCESS){
                 User userResponse = response.getServiceResponse();
                 if (userResponse instanceof Client){
-                    Intent navigationIntent = new Intent(MainActivity.this, ClientHomeActivity.class);
+                    Intent navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
                     startActivity(navigationIntent);
                 } else if (userResponse instanceof Driver){
-                    Intent navigationIntent = new Intent(MainActivity.this, ClientHomeActivity.class);
+                    Intent navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
                     startActivity(navigationIntent);
                 }
-                //LoginManager.getInstance().logOut();
             } else {
-                this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Ocurrio un error iniciando sesión con Facebook", Snackbar.LENGTH_SHORT);
+                this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Ocurrio un error obteniendo su sesion de Facebook", Snackbar.LENGTH_SHORT);
+                LoginManager.getInstance().logOut();
             }
         }
     }

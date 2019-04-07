@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_logo">P</string>
     <string name="app_name">Petify</string>
     <string name="home_client_name">Home Cliente</string>
     <string name="home_driver_name">Home Chofer</string>
