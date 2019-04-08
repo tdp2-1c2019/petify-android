@@ -7,18 +7,21 @@
     tools:context="com.app.petify.activities.DriverHomeActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/home_driver_name"
-        android:theme="@style/Title"
-        android:layout_centerHorizontal="true"/>
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:theme="@style/Title" />
 
     <TextView
-        android:id="@+id/display_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_margin="5dp" />
+        android:text="@string/conduciendo"
+        android:textAlignment="center"
+        android:textSize="@dimen/font_size_medium"
+        android:theme="@style/Title" />
 
     <Button
         android:id="@+id/logout_button"

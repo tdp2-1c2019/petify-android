@@ -3,6 +3,7 @@
     <string name="app_name">Petify</string>
     <string name="home_client_name">Home Cliente</string>
     <string name="home_driver_name">Home Chofer</string>
+    <string name="conduciendo">Conduciendo</string>
     <string name="home_logout">LogOut</string>
 
     <string name="driver_button">Driver button</string>
