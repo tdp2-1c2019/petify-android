@@ -7,6 +7,27 @@
     android:background="#FFFFFF"
     tools:context=".MapsActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:theme="@style/Title" />
+
+    <EditText
+        android:id="@+id/origin_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress"
+        android:autofillHints="Origen"/>
+
+    <EditText
+        android:id="@+id/destination_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress"
+        android:autofillHints="Destino"/>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
