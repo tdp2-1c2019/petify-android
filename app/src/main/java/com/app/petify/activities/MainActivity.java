@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
             if (statusCode == UserResponse.ServiceStatusCode.SUCCESS){
                 User userResponse = response.getServiceResponse();
                 if (userResponse instanceof Client){
-                    Intent navigationIntent = new Intent(MainActivity.this, ClientHomeActivity.class);
+                    Intent navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
                     startActivity(navigationIntent);
                 } else if (userResponse instanceof Driver){
                     Intent navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
             if (statusCode == UserResponse.ServiceStatusCode.SUCCESS){
                 User userResponse = response.getServiceResponse();
                 if (userResponse instanceof Client){
-                    Intent navigationIntent = new Intent(MainActivity.this, ClientHomeActivity.class);
+                    Intent navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
                     startActivity(navigationIntent);
                 } else if (userResponse instanceof Driver){
                     Intent navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);

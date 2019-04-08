@@ -7,6 +7,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -36,9 +37,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -46,6 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Address origin;
     private Address destination;
     private Polyline trip;
+    private Marker mChoferMarker;
 
     private EditText mOriginAdress;
     private EditText mDestinationAdress;
@@ -53,6 +60,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private FusedLocationProviderClient fusedLocationClient;
     private int LOCATION_PERMISSION = 2;
+
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +124,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void afterTextChanged(Editable s) {
             }
         });
+
+        // Conectamos a la db de firebase para tener las coordenadas del chofer
+        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     private void loadTrip() {
@@ -182,6 +194,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        ValueEventListener driverPositionListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                HashMap<String, Double> coordinates = (HashMap<String, Double>) dataSnapshot.getValue();
+                LatLng choferLatLng = new LatLng(coordinates.get("lat"), coordinates.get("lng"));
+                if (mChoferMarker != null) mChoferMarker.remove();
+                mChoferMarker = mMap.addMarker(new MarkerOptions().position(choferLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        mDatabase.child("ubicacion").addValueEventListener(driverPositionListener);
     }
 }
