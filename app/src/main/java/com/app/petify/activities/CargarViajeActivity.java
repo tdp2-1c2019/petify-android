@@ -20,7 +20,7 @@ public class CargarViajeActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), SeleccionChoferActivity.class);
+                Intent i = new Intent(getBaseContext(), ViajeCursoActivity.class);
                 startActivity(i);
             }
         });
