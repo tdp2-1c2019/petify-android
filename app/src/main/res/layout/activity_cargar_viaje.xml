@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.app.petify.activities.CargarViajeActivity" >
+    tools:context="com.app.petify.activities.CargarViajeActivity">
 
     <TextView
         android:id="@+id/cargarViajeTitleTV"
@@ -14,19 +14,20 @@
         android:layout_margin="@dimen/_10sdp"
         android:text="@string/app_name"
         android:textAlignment="center"
+        android:textColor="@color/com_facebook_blue"
         android:theme="@style/Title" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_margin="@dimen/_10sdp"
+            android:layout_weight="1"
             android:text="@string/cantidad_mascotas"
             android:theme="@style/Texto" />
 
@@ -34,8 +35,8 @@
             android:id="@+id/spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_margin="@dimen/_10sdp"
+            android:layout_weight="1"
             android:entries="@array/cantM"
             android:theme="@style/Spinner" />
 
@@ -44,14 +45,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_margin="@dimen/_10sdp"
+            android:layout_weight="1"
             android:text="@string/viaja_acompanante"
             android:theme="@style/Texto" />
 
@@ -59,8 +60,8 @@
             android:id="@+id/switch1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="@dimen/_10sdp" />
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
@@ -74,8 +75,8 @@
             android:id="@+id/textView3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_margin="@dimen/_10sdp"
+            android:layout_weight="1"
             android:text="@string/forma_pago"
             android:theme="@style/Texto" />
 
@@ -83,8 +84,8 @@
             android:id="@+id/spinner2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_margin="@dimen/_10sdp"
+            android:layout_weight="1"
             android:entries="@array/formaP"
             android:theme="@style/Spinner" />
 
@@ -95,8 +96,8 @@
         style="@style/Textbox"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_margin="@dimen/_10sdp"
+        android:layout_weight="1"
         android:textColorHint="@color/dark"
         android:theme="@style/Textbox"
         app:boxStrokeColor="@color/dark">
@@ -118,8 +119,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp"
-        android:textAlignment="center"
         android:text="Precio final: $123.50"
+        android:textAlignment="center"
         android:textColor="@color/dark"
         android:theme="@style/Texto" />
 
