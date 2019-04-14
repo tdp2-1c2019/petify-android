@@ -1,98 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.app.petify.activities.CargarViaje">
+    android:orientation="vertical"
+    tools:context="com.app.petify.activities.CargarViajeActivity" >
 
     <TextView
         android:id="@+id/cargarViajeTitleTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginRight="70px"
+        android:layout_margin="@dimen/_10sdp"
         android:text="@string/app_name"
         android:textAlignment="center"
         android:theme="@style/Title" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cargarViajeTitleTV"
-        android:layout_marginLeft="80px"
-        android:layout_marginTop="100px"
-        android:layout_marginRight="100px"
-        android:text="Cantidad de mascotas"
-        android:theme="@style/Texto" />
-
-    <Spinner
-        android:id="@+id/spinner"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/cargarViajeTitleTV"
-        android:layout_marginTop="115px"
-        android:layout_toRightOf="@id/textView"
-        android:entries="@array/cantM"
-        android:theme="@style/Spinner" />
+        android:orientation="horizontal" >
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
-        android:layout_marginLeft="80px"
-        android:layout_marginTop="100px"
-        android:layout_marginRight="500px"
-        android:text="Viaja acompañante"
-        android:theme="@style/Texto" />
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/_10sdp"
+            android:text="@string/cantidad_mascotas"
+            android:theme="@style/Texto" />
 
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/spinner"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="115px"
-        android:layout_marginRight="50px"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        android:text="" />
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/_10sdp"
+            android:entries="@array/cantM"
+            android:theme="@style/Spinner" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView2"
-        android:layout_marginLeft="80px"
-        android:layout_marginTop="100px"
-        android:layout_marginRight="300px"
-        android:text="Forma de pago"
-        android:theme="@style/Texto" />
+    </LinearLayout>
 
-    <Spinner
-        android:id="@+id/spinner2"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/switch1"
-        android:layout_marginTop="115px"
-        android:layout_toRightOf="@id/textView3"
-        android:entries="@array/formaP"
-        android:theme="@style/Spinner" />
+        android:orientation="horizontal" >
 
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/_10sdp"
+            android:text="@string/viaja_acompanante"
+            android:theme="@style/Texto" />
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/_10sdp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/_10sdp"
+            android:text="@string/forma_pago"
+            android:theme="@style/Texto" />
+
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/_10sdp"
+            android:entries="@array/formaP"
+            android:theme="@style/Spinner" />
+
+    </LinearLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/multiline"
         style="@style/Textbox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView3"
-        android:layout_marginLeft="50px"
-        android:layout_marginTop="100px"
-        android:layout_marginRight="50px"
-        android:paddingLeft="30px"
-        android:paddingBottom="30px"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="@dimen/_10sdp"
         android:textColorHint="@color/dark"
         android:theme="@style/Textbox"
         app:boxStrokeColor="@color/dark">
@@ -100,28 +104,21 @@
         <EditText
             android:id="@+id/editText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:ems="10"
             android:gravity="top"
-            android:hint="Observaciones"
-            android:inputType="textMultiLine"
-            android:lines="8"
-            android:paddingLeft="20px"
-            android:paddingTop="60px"
-            android:paddingBottom="60px"
-            android:textSize="6.6pt" />
+            android:hint="@string/observaciones"
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine" />
     </android.support.design.widget.TextInputLayout>
 
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="80px"
-        android:layout_marginRight="300px"
-        android:layout_marginBottom="100px"
+        android:layout_margin="@dimen/_10sdp"
+        android:textAlignment="center"
         android:text="Precio final: $123.50"
         android:textColor="@color/dark"
         android:theme="@style/Texto" />
@@ -129,9 +126,9 @@
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
-        android:layout_height="250px"
-        android:layout_alignParentBottom="true"
-        android:text="Solicitar viaje"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:text="@string/solicitar_viaje"
         android:theme="@style/Button" />
 
-</RelativeLayout>
+</LinearLayout>

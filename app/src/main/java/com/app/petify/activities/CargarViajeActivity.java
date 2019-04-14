@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.app.petify.R;
 
-public class CargarViaje extends AppCompatActivity {
+public class CargarViajeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

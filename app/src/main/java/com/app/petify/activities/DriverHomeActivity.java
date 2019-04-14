@@ -52,7 +52,6 @@ public class DriverHomeActivity extends AppCompatActivity {
                 startActivity(navigationIntent);
             }
         });
-        logoutButton.setVisibility(View.INVISIBLE);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 

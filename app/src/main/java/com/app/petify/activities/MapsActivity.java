@@ -24,7 +24,6 @@ import com.akexorcist.googledirection.model.Direction;
 import com.akexorcist.googledirection.model.Leg;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.app.petify.R;
-import com.app.petify.models.Client;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -86,7 +85,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         cargarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), CargarViaje.class);
+                Intent i = new Intent(getBaseContext(), CargarViajeActivity.class);
                 i.putExtra("from", 123);
                 i.putExtra("to", 321);
                 startActivity(i);

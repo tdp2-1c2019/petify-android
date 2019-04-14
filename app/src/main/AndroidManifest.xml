@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.CargarViaje"
+            android:name=".activities.CargarViajeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.NewTripActivity"
