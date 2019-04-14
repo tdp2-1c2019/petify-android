@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -46,25 +47,29 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+    private int LOCATION_PERMISSION = 2;
 
-    private GoogleMap mMap;
+    private Geocoder geocoder;
+    private FusedLocationProviderClient fusedLocationClient;
+
+    private Marker choferMarker;
     private Address origin;
     private Address destination;
     private Polyline trip;
-    private Marker mChoferMarker;
-    private Button cargarBtn;
 
+    private SearchAddress originSearch;
+    private SearchAddress destinationSearch;
+
+    private GoogleMap mMap;
     private EditText mOriginAdress;
     private EditText mDestinationAdress;
-    private Geocoder geocoder;
-
-    private FusedLocationProviderClient fusedLocationClient;
-    private int LOCATION_PERMISSION = 2;
-
+    private Button mCargarViaje;
     private DatabaseReference mDatabase;
 
     @Override
@@ -81,8 +86,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mOriginAdress = findViewById(R.id.origin_address);
         mDestinationAdress = findViewById(R.id.destination_address);
-        cargarBtn = findViewById(R.id.cargar_viaje);
-        cargarBtn.setOnClickListener(new View.OnClickListener() {
+        mCargarViaje = findViewById(R.id.cargar_viaje);
+        mCargarViaje.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(), CargarViajeActivity.class);
@@ -92,7 +97,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        // TODO hacer estas cosas de manera asincronica
         mOriginAdress.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -101,14 +105,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Cambia lo escrito por el usuario
-                try {
-                    origin = geocoder.getFromLocationName(s.toString(), 1).get(0);
-                    mOriginAdress.setError(null);
-                    loadTrip();
-                } catch (Exception e) {
-                    mOriginAdress.setError("Direccion invalida");
-                    e.printStackTrace();
-                }
+                if (originSearch != null) originSearch.cancel(true);
+                originSearch = new SearchAddress(true);
+                originSearch.execute();
             }
 
             @Override
@@ -124,14 +123,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Cambia lo escrito por el usuario
-                try {
-                    destination = geocoder.getFromLocationName(s.toString(), 1).get(0);
-                    mDestinationAdress.setError(null);
-                    loadTrip();
-                } catch (Exception e) {
-                    mDestinationAdress.setError("Direccion invalida");
-                    e.printStackTrace();
-                }
+                if (destinationSearch != null) destinationSearch.cancel(true);
+                destinationSearch = new SearchAddress(false);
+                destinationSearch.execute();
             }
 
             @Override
@@ -213,8 +207,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 HashMap<String, Double> coordinates = (HashMap<String, Double>) dataSnapshot.getValue();
                 LatLng choferLatLng = new LatLng(coordinates.get("lat"), coordinates.get("lng"));
-                if (mChoferMarker != null) mChoferMarker.remove();
-                mChoferMarker = mMap.addMarker(new MarkerOptions().position(choferLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                if (choferMarker != null) choferMarker.remove();
+                choferMarker = mMap.addMarker(new MarkerOptions().position(choferLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
             }
 
             @Override
@@ -223,5 +217,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         };
         mDatabase.child("ubicacion").addValueEventListener(driverPositionListener);
+    }
+
+    private class SearchAddress extends AsyncTask<Void, Void, Address> {
+        private boolean isOrigin;
+        private EditText editText;
+
+        SearchAddress(boolean isOrigin) {
+            this.isOrigin = isOrigin;
+            if (isOrigin) editText = mOriginAdress;
+            else editText = mDestinationAdress;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            editText.setError(null);
+        }
+
+        @Override
+        protected Address doInBackground(Void... nothing) {
+            try {
+                String addressString = editText.getText().toString();
+                List<Address> results = geocoder.getFromLocationName(addressString, 1);
+                if (results.size() == 0) {
+                    return null;
+                }
+                Address address = results.get(0);
+                if (isCancelled()) return null;
+                return address;
+            } catch (IOException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Address result) {
+            if (result == null) editText.setError("Direccion invalida");
+            else {
+                if (isOrigin) origin = result;
+                else destination = result;
+                loadTrip();
+            }
+        }
     }
 }
