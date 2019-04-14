@@ -14,4 +14,14 @@
     <string name="fb_login_protocol_scheme">fb307179333289046</string>
     <string name="error_invalid_login">Ocurrio un error durante el Facebook login</string>
     <string name="title_activity_maps">Map</string>
+
+    <string-array name="cantM">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="formaP">
+        <item>Efectivo</item>
+        <item>Tarjeta</item>
+    </string-array>
 </resources>

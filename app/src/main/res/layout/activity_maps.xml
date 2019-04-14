@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#FFFFFF"
-    tools:context=".MapsActivity">
+    android:orientation="vertical"
+    tools:context=".activities.MapsActivity">
 
     <TextView
+        android:id="@+id/mapsActivityTitleTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_10sdp"
@@ -19,23 +20,40 @@
         android:id="@+id/origin_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPostalAddress"
-        android:autofillHints="Origen"/>
+        android:layout_below="@id/mapsActivityTitleTV"
+        android:autofillHints="Origen"
+        android:inputType="textPostalAddress" />
 
     <EditText
         android:id="@+id/destination_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPostalAddress"
-        android:autofillHints="Destino"/>
+        android:layout_below="@id/origin_address"
+        android:autofillHints="Destino"
+        android:inputType="textPostalAddress" />
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <android.support.v7.widget.CardView
+        android:id="@+id/card"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MapsActivity" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/destination_address">
 
-</LinearLayout>
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="250px"
+            tools:context=".activities.MapsActivity" />
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="match_parent"
+        android:layout_height="250px"
+        android:layout_below="@id/card"
+        android:layout_marginTop="-250px"
+        android:text="Cargar viaje"
+        android:theme="@style/Button" />
+
+</RelativeLayout>

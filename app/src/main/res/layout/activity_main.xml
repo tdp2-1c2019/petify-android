@@ -19,8 +19,8 @@
             android:layout_centerInParent="true"
             android:text="@string/app_logo"
             android:textColor="@color/com_facebook_blue"
-            android:textStyle="bold"
-            android:textSize="@dimen/font_size_huge"/>
+            android:textSize="@dimen/font_size_huge"
+            android:textStyle="bold" />
 
     </RelativeLayout>
     <LinearLayout

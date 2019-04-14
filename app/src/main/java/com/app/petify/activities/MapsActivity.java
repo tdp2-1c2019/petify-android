@@ -1,6 +1,7 @@
 package com.app.petify.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -13,6 +14,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.akexorcist.googledirection.DirectionCallback;
@@ -21,6 +24,7 @@ import com.akexorcist.googledirection.model.Direction;
 import com.akexorcist.googledirection.model.Leg;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.app.petify.R;
+import com.app.petify.models.Client;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -53,6 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Address destination;
     private Polyline trip;
     private Marker mChoferMarker;
+    private Button cargarBtn;
 
     private EditText mOriginAdress;
     private EditText mDestinationAdress;
@@ -77,6 +82,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mOriginAdress = findViewById(R.id.origin_address);
         mDestinationAdress = findViewById(R.id.destination_address);
+        cargarBtn = findViewById(R.id.button3);
+        cargarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), CargarViaje.class);
+                i.putExtra("from", 123);
+                i.putExtra("to", 321);
+                startActivity(i);
+            }
+        });
 
         // TODO hacer estas cosas de manera asincronica
         mOriginAdress.addTextChangedListener(new TextWatcher() {
