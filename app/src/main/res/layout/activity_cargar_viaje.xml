@@ -124,11 +124,12 @@
         android:theme="@style/Texto" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/solicitar_viaje"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp"
         android:text="@string/solicitar_viaje"
+        android:textAlignment="center"
         android:theme="@style/Button" />
 
 </LinearLayout>

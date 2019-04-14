@@ -19,6 +19,7 @@
     <string name="forma_pago">Forma de pago</string>
     <string name="solicitar_viaje">Solicitar viaje</string>
     <string name="observaciones">Observaciones</string>
+    <string name="cargar_viaje">Cargar viaje</string>
 
     <string-array name="cantM">
         <item>1</item>

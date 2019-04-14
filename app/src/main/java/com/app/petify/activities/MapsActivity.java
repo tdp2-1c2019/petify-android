@@ -81,7 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mOriginAdress = findViewById(R.id.origin_address);
         mDestinationAdress = findViewById(R.id.destination_address);
-        cargarBtn = findViewById(R.id.button3);
+        cargarBtn = findViewById(R.id.cargar_viaje);
         cargarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

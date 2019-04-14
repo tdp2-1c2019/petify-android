@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,53 +7,68 @@
     android:orientation="vertical"
     tools:context=".activities.MapsActivity">
 
-    <TextView
-        android:id="@+id/mapsActivityTitleTV"
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:text="@string/app_name"
-        android:textAlignment="center"
-        android:theme="@style/Title" />
+        tools:context=".activities.MapsActivity" />
 
-    <EditText
-        android:id="@+id/origin_address"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/mapsActivityTitleTV"
-        android:autofillHints="Origen"
-        android:inputType="textPostalAddress" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/destination_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/origin_address"
-        android:autofillHints="Destino"
-        android:inputType="textPostalAddress" />
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/destination_address">
-
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+        <TextView
+            android:id="@+id/mapsActivityTitleTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="250px"
-            tools:context=".activities.MapsActivity" />
-    </android.support.v7.widget.CardView>
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/_10sdp"
+            android:text="@string/app_name"
+            android:textColor="@color/com_facebook_blue"
+            android:textAlignment="center"
+            android:theme="@style/Title"/>
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="match_parent"
-        android:layout_height="250px"
-        android:layout_below="@id/card"
-        android:layout_marginTop="-250px"
-        android:text="Cargar viaje"
-        android:theme="@style/Button" />
+        <EditText
+            android:id="@+id/origin_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mapsActivityTitleTV"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:hint="Origen"
+            android:inputType="textPostalAddress"
+            android:background="#FFFFFF" />
 
-</RelativeLayout>
+        <EditText
+            android:id="@+id/destination_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/origin_address"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:hint="Destino"
+            android:inputType="textPostalAddress"
+            android:background="#FFFFFF" />
+
+        <Button
+            android:id="@+id/cargar_viaje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/_10sdp"
+            android:text="@string/cargar_viaje"
+            android:textAlignment="center"
+            android:theme="@style/Button" />
+
+    </RelativeLayout>
+</FrameLayout>
