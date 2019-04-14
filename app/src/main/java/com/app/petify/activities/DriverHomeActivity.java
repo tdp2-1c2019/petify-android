@@ -1,20 +1,17 @@
 package com.app.petify.activities;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Button;
 
 import com.app.petify.R;
 import com.app.petify.models.Driver;
 import com.app.petify.utils.LocalStorage;
-import com.facebook.login.LoginManager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -55,15 +52,15 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         Driver driver = LocalStorage.getDriver();
 
         logoutButton = findViewById(R.id.logout_button);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fusedLocationClient.removeLocationUpdates(locationCallback);
-                LoginManager.getInstance().logOut();
-                Intent navigationIntent = new Intent(DriverHomeActivity.this, MainActivity.class);
-                startActivity(navigationIntent);
-            }
-        });
+//        logoutButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                fusedLocationClient.removeLocationUpdates(locationCallback);
+//                LoginManager.getInstance().logOut();
+//                Intent navigationIntent = new Intent(DriverHomeActivity.this, MainActivity.class);
+//                startActivity(navigationIntent);
+//            }
+//        });
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 

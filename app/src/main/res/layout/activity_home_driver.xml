@@ -23,18 +23,38 @@
             android:layout_alignParentTop="true"
             android:layout_margin="@dimen/_10sdp"
             android:text="@string/app_name"
-            android:textColor="@color/com_facebook_blue"
             android:textAlignment="center"
-            android:theme="@style/Title"/>
+            android:textColor="@color/com_facebook_blue"
+            android:theme="@style/Title" />
 
-        <Button
-            android:id="@+id/logout_button"
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/_10sdp"
-            android:text="@string/home_logout" />
+            android:layout_alignParentBottom="true">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    style="@style/Texto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:text="Disponible" />
+
+                <Switch
+                    android:id="@+id/switch2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:layout_toRightOf="@+id/textView6"
+                    android:layout_weight="1"
+                    android:checked="true" />
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
 
     </RelativeLayout>
 
