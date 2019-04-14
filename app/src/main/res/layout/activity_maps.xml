@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,39 +24,52 @@
             android:layout_alignParentTop="true"
             android:layout_margin="@dimen/_10sdp"
             android:text="@string/app_name"
-            android:textColor="@color/com_facebook_blue"
             android:textAlignment="center"
-            android:theme="@style/Title"/>
+            android:textColor="@color/com_facebook_blue"
+            android:theme="@style/Title" />
 
-        <EditText
-            android:id="@+id/origin_address"
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/origin_address_container"
+            style="@style/Textbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/mapsActivityTitleTV"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:layout_marginLeft="@dimen/_10sdp"
-            android:layout_marginRight="@dimen/_10sdp"
-            android:paddingTop="@dimen/_5sdp"
-            android:paddingBottom="@dimen/_5sdp"
-            android:hint="Origen"
-            android:inputType="textPostalAddress"
-            android:background="#FFFFFF" />
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:textColorHint="@color/dark"
+            android:theme="@style/Textbox"
+            app:boxBackgroundColor="@color/white"
+            app:boxStrokeColor="@color/dark">
 
-        <EditText
-            android:id="@+id/destination_address"
+            <EditText
+                android:id="@+id/origin_address"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="Origen" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/destination_address_container"
+            style="@style/Textbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/origin_address"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:layout_marginLeft="@dimen/_10sdp"
-            android:layout_marginRight="@dimen/_10sdp"
-            android:paddingTop="@dimen/_5sdp"
-            android:paddingBottom="@dimen/_5sdp"
-            android:hint="Destino"
-            android:inputType="textPostalAddress"
-            android:background="#FFFFFF" />
+            android:layout_below="@id/origin_address_container"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:textColorHint="@color/dark"
+            android:theme="@style/Textbox"
+            app:boxBackgroundColor="@color/white"
+            app:boxStrokeColor="@color/dark">
+
+            <EditText
+                android:id="@+id/destination_address"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="Destino" />
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/cargar_viaje"
