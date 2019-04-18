@@ -4,20 +4,15 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.akexorcist.googledirection.DirectionCallback;
 import com.akexorcist.googledirection.GoogleDirection;
@@ -25,6 +20,7 @@ import com.akexorcist.googledirection.model.Direction;
 import com.akexorcist.googledirection.model.Leg;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.app.petify.R;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -41,34 +37,32 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private int LOCATION_PERMISSION = 2;
 
-    private Geocoder geocoder;
     private FusedLocationProviderClient fusedLocationClient;
 
     private Marker choferMarker;
-    private Address origin;
-    private Address destination;
+    private Place origin;
+    private Place destination;
     private Polyline trip;
 
-    private SearchAddress originSearch;
-    private SearchAddress destinationSearch;
-
     private GoogleMap mMap;
-    private EditText mOriginAdress;
-    private EditText mDestinationAdress;
     private Button mCargarViaje;
     private DatabaseReference mDatabase;
 
@@ -82,10 +76,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        geocoder = new Geocoder(this);
+        if (!Places.isInitialized()) Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
 
-        mOriginAdress = findViewById(R.id.origin_address);
-        mDestinationAdress = findViewById(R.id.destination_address);
         mCargarViaje = findViewById(R.id.cargar_viaje);
         mCargarViaje.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,40 +89,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        mOriginAdress.addTextChangedListener(new TextWatcher() {
+        AutocompleteSupportFragment originAutocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.origin_autocomplete_fragment);
+        originAutocompleteFragment.setCountry("AR");
+        originAutocompleteFragment.setHint("Origen");
+        originAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        originAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void onPlaceSelected(Place place) {
+                origin = place;
+                loadTrip();
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Cambia lo escrito por el usuario
-                if (originSearch != null) originSearch.cancel(true);
-                originSearch = new SearchAddress(true);
-                originSearch.execute();
             }
-
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void onError(Status status) {}
         });
 
-        mDestinationAdress.addTextChangedListener(new TextWatcher() {
+        AutocompleteSupportFragment destinationAutocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.destination_autocomplete_fragment);
+        destinationAutocompleteFragment.setCountry("AR");
+        destinationAutocompleteFragment.setHint("Destino");
+        destinationAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        destinationAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void onPlaceSelected(Place place) {
+                destination = place;
+                loadTrip();
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Cambia lo escrito por el usuario
-                if (destinationSearch != null) destinationSearch.cancel(true);
-                destinationSearch = new SearchAddress(false);
-                destinationSearch.execute();
             }
-
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void onError(Status status) {}
         });
 
         // Conectamos a la db de firebase para tener las coordenadas del chofer
@@ -139,8 +127,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void loadTrip() {
         if (origin != null && destination != null) {
-            final LatLng originLatLng = new LatLng(origin.getLatitude(), origin.getLongitude());
-            final LatLng destinationLatLng = new LatLng(destination.getLatitude(), destination.getLongitude());
+            final LatLng originLatLng = origin.getLatLng();
+            final LatLng destinationLatLng = destination.getLatLng();
 
             // Ponemos los markers sacando lo anterior
             mMap.clear();
@@ -149,7 +137,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.addMarker(new MarkerOptions().position(destinationLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
             // Dibujamos el camino
-            GoogleDirection.withServerKey("AIzaSyB3DfG7c86Bt8RNSyiUIoctokes9zB-4Yc")
+            GoogleDirection.withServerKey(getString(R.string.google_maps_key))
                     .from(originLatLng).to(destinationLatLng)
                     .execute(new DirectionCallback() {
                         @Override
@@ -217,47 +205,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         };
         mDatabase.child("ubicacion").addValueEventListener(driverPositionListener);
-    }
-
-    private class SearchAddress extends AsyncTask<Void, Void, Address> {
-        private boolean isOrigin;
-        private EditText editText;
-
-        SearchAddress(boolean isOrigin) {
-            this.isOrigin = isOrigin;
-            if (isOrigin) editText = mOriginAdress;
-            else editText = mDestinationAdress;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            editText.setError(null);
-        }
-
-        @Override
-        protected Address doInBackground(Void... nothing) {
-            try {
-                String addressString = editText.getText().toString();
-                List<Address> results = geocoder.getFromLocationName(addressString, 1);
-                if (results.size() == 0) {
-                    return null;
-                }
-                Address address = results.get(0);
-                if (isCancelled()) return null;
-                return address;
-            } catch (IOException e) {
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Address result) {
-            if (result == null) editText.setError("Direccion invalida");
-            else {
-                if (isOrigin) origin = result;
-                else destination = result;
-                loadTrip();
-            }
-        }
     }
 }
