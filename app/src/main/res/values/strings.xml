@@ -28,6 +28,6 @@
     </string-array>
     <string-array name="formaP">
         <item>Efectivo</item>
-        <item>Tarjeta</item>
+        <item>Mercadopago</item>
     </string-array>
 </resources>

@@ -32,23 +32,25 @@
     <style name="Textbox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="colorAccent">@color/dark</item>
         <item name="boxStrokeColor">@color/white</item>
-        <item name="boxStrokeWidth">2dp</item>
+        <item name="android:paddingLeft">8dp</item>
     </style>
 
     <style name="Texto" parent="android:Widget.TextView">
-        <item name="android:textSize">25dp</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">@color/dark</item>
     </style>
 
     <style name="Spinner">
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:textColor">@color/com_facebook_blue</item>
     </style>
-
 
     <style name="Button" parent="android:Widget.Button">
         <item name="android:backgroundTint">@color/com_facebook_blue</item>
         <item name="android:textColor">#ffffff</item>
         <item name="android:fontFamily">@font/ps_bold</item>
+        <item name="android:textSize">15dp</item>
     </style>
 
-    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/dark</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/grey</color>
 </resources>
