@@ -82,10 +82,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mCargarViaje.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), CargarViajeActivity.class);
-                i.putExtra("from", 123);
-                i.putExtra("to", 321);
-                startActivity(i);
+                Intent intent = new Intent(getBaseContext(), CargarViajeActivity.class);
+                intent.putExtra("ORIGIN_ADDRESS", origin.getName());
+                intent.putExtra("ORIGIN_LAT", origin.getLatLng().latitude);
+                intent.putExtra("ORIGIN_LNG", origin.getLatLng().longitude);
+                intent.putExtra("DESTINATION_ADDRESS", destination.getName());
+                intent.putExtra("DESTINATION_LAT", destination.getLatLng().latitude);
+                intent.putExtra("DESTINATION_LNG", destination.getLatLng().longitude);
+                startActivity(intent);
             }
         });
 
