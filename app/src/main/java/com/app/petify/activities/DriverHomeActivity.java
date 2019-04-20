@@ -8,10 +8,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import com.app.petify.R;
 import com.app.petify.models.Driver;
 import com.app.petify.utils.LocalStorage;
+import com.facebook.Profile;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -37,7 +40,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private LocationCallback locationCallback;
     private double wayLatitude = 0.0, wayLongitude = 0.0;
     private int LOCATION_PERMISSION = 2;
-
+    private Switch disponible;
     private DatabaseReference mDatabase;
 
     @Override
@@ -50,6 +53,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         mapFragment.getMapAsync(this);
 
         Driver driver = LocalStorage.getDriver();
+        disponible = findViewById(R.id.switch2);
 
         logoutButton = findViewById(R.id.logout_button);
 //        logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +97,14 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         };
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
+
+        mDatabase.child("disponibles").child(Profile.getCurrentProfile().getId()).setValue(disponible.isChecked());
+        disponible.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mDatabase.child("disponibles").child(Profile.getCurrentProfile().getId()).setValue(disponible.isChecked());
+            }
+        });
     }
 
     @Override
@@ -118,5 +130,17 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                 }
             }
         });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mDatabase.child("disponibles").child(Profile.getCurrentProfile().getId()).setValue(false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mDatabase.child("disponibles").child(Profile.getCurrentProfile().getId()).setValue(true);
     }
 }
