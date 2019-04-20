@@ -1,7 +1,6 @@
 package com.app.petify.activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Address;
@@ -13,8 +12,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -86,7 +83,7 @@ public class NewTripActivity extends AppCompatActivity implements OnMapReadyCall
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                LatLng mid = new LatLng((from.latitude+to.latitude)/2, (from.longitude+to.longitude)/2);
+                LatLng mid = new LatLng((from.latitude + to.latitude) / 2, (from.longitude + to.longitude) / 2);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(mid));
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mid, 15);
                 mMap.animateCamera(cameraUpdate);

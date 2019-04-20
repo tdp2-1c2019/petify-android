@@ -30,13 +30,13 @@ public class UserTypeSelectionActivity extends AppCompatActivity {
     }
 
     protected class ClientTypeButtonHandler implements View.OnClickListener {
-        public void onClick(View v){
+        public void onClick(View v) {
             new ClientSignUpTask().execute();
         }
     }
 
     protected class DriverTypeButtonHandler implements View.OnClickListener {
-        public void onClick(View v){
+        public void onClick(View v) {
             new DriverSignUpTask().execute();
         }
     }
@@ -62,7 +62,7 @@ public class UserTypeSelectionActivity extends AppCompatActivity {
             this.snackbar.dismiss();
 
             UserResponse.ServiceStatusCode statusCode = response.getStatusCode();
-            if (statusCode == UserResponse.ServiceStatusCode.SUCCESS){
+            if (statusCode == UserResponse.ServiceStatusCode.SUCCESS) {
                 Client client = response.getServiceResponse();
                 LocalStorage.setClient(client);
                 Intent navigationIntent = new Intent(UserTypeSelectionActivity.this, ClientHomeActivity.class);

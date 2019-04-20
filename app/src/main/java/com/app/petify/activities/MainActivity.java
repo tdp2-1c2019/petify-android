@@ -5,12 +5,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.app.petify.R;
 import com.app.petify.models.Client;
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         AppEventsLogger.activateApp(this);
 
         // Check for Internet permissions
-        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.INTERNET}, INTERNET_PERMISSION);
         }
 
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void retrieveSession(AccessToken accessToken){
+    private void retrieveSession(AccessToken accessToken) {
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
@@ -119,19 +118,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void useLoginInformation(AccessToken accessToken) {
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-                @Override
-                public void onCompleted(JSONObject object, GraphResponse response) {
-                    try {
-                        String facebookId = object.has("id") ? object.getString("id") : "";
-                        String name = object.has("name") ? object.getString("name") : "";
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                try {
+                    String facebookId = object.has("id") ? object.getString("id") : "";
+                    String name = object.has("name") ? object.getString("name") : "";
 
-                        new FacebookLoginTask().execute(facebookId, name);
+                    new FacebookLoginTask().execute(facebookId, name);
 
-                    } catch (JSONException e) {
-                        Log.e("Error Facebook Login", e.getMessage());
-                    }
+                } catch (JSONException e) {
+                    Log.e("Error Facebook Login", e.getMessage());
                 }
-            });
+            }
+        });
 
         // Parameter setting with Bundle
         Bundle parameters = new Bundle();
@@ -163,12 +162,12 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.login_button).setEnabled(true);
 
             UserResponse.ServiceStatusCode statusCode = response.getStatusCode();
-            if (statusCode == UserResponse.ServiceStatusCode.SUCCESS){
+            if (statusCode == UserResponse.ServiceStatusCode.SUCCESS) {
                 User userResponse = response.getServiceResponse();
-                if (userResponse instanceof Client){
+                if (userResponse instanceof Client) {
                     Intent navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
                     startActivity(navigationIntent);
-                } else if (userResponse instanceof Driver){
+                } else if (userResponse instanceof Driver) {
                     Intent navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
                     startActivity(navigationIntent);
                 }
@@ -201,12 +200,12 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.login_button).setEnabled(true);
 
             UserResponse.ServiceStatusCode statusCode = response.getStatusCode();
-            if (statusCode == UserResponse.ServiceStatusCode.SUCCESS){
+            if (statusCode == UserResponse.ServiceStatusCode.SUCCESS) {
                 User userResponse = response.getServiceResponse();
-                if (userResponse instanceof Client){
+                if (userResponse instanceof Client) {
                     Intent navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
                     startActivity(navigationIntent);
-                } else if (userResponse instanceof Driver){
+                } else if (userResponse instanceof Driver) {
                     Intent navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
                     startActivity(navigationIntent);
                 }

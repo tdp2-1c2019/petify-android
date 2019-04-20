@@ -89,8 +89,8 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                     if (location != null) {
                         wayLatitude = location.getLatitude();
                         wayLongitude = location.getLongitude();
-                        mDatabase.child("ubicacion").child("lat").setValue(wayLatitude);
-                        mDatabase.child("ubicacion").child("lng").setValue(wayLongitude);
+                        mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("lat").setValue(wayLatitude);
+                        mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("lng").setValue(wayLongitude);
                     }
                 }
             }

@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.app.petify.R;
-import com.google.android.libraries.places.api.model.Place;
 
 public class CargarViajeActivity extends AppCompatActivity {
 
@@ -36,15 +35,15 @@ public class CargarViajeActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         origin_address = intent.getStringExtra("ORIGIN_ADDRESS");
-        origin_latitude = intent.getDoubleExtra("ORIGIN_LAT",0);
+        origin_latitude = intent.getDoubleExtra("ORIGIN_LAT", 0);
         origin_longitude = intent.getDoubleExtra("ORIGIN_LNG", 0);
         destination_address = intent.getStringExtra("DESTINATION_ADDRESS");
-        destination_latitude = intent.getDoubleExtra("DESTINATION_LAT",0);
+        destination_latitude = intent.getDoubleExtra("DESTINATION_LAT", 0);
         destination_longitude = intent.getDoubleExtra("DESTINATION_LNG", 0);
 
         TextView mOriginText = findViewById(R.id.origin_text);
-        mOriginText.setText("Origen: "+origin_address);
+        mOriginText.setText("Origen: " + origin_address);
         TextView mDestinationText = findViewById(R.id.destination_text);
-        mDestinationText.setText("Destino: "+destination_address);
+        mDestinationText.setText("Destino: " + destination_address);
     }
 }

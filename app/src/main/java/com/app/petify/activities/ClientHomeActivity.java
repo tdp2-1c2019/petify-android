@@ -6,13 +6,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
+import com.app.petify.R;
 import com.app.petify.models.Client;
 import com.app.petify.utils.LocalStorage;
 import com.facebook.login.LoginManager;
-
-import com.app.petify.R;
 
 public class ClientHomeActivity extends AppCompatActivity {
 
@@ -37,7 +35,7 @@ public class ClientHomeActivity extends AppCompatActivity {
         });
 
         fabButton = findViewById(R.id.floatingActionButton3);
-        fabButton.setOnClickListener(new View.OnClickListener(){
+        fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ClientHomeActivity.this, NewTripActivity.class);

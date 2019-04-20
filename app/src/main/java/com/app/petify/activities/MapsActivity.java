@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,18 +38,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private int LOCATION_PERMISSION = 2;
@@ -75,7 +67,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        if (!Places.isInitialized()) Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
+        if (!Places.isInitialized())
+            Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
 
         mCargarViaje = findViewById(R.id.cargar_viaje);
         mCargarViaje.setVisibility(View.GONE);
@@ -105,8 +98,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 loadTrip();
 
             }
+
             @Override
-            public void onError(Status status) {}
+            public void onError(Status status) {
+            }
         });
 
         AutocompleteSupportFragment destinationAutocompleteFragment = (AutocompleteSupportFragment)
@@ -121,8 +116,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 loadTrip();
 
             }
+
             @Override
-            public void onError(Status status) {}
+            public void onError(Status status) {
+            }
         });
     }
 
