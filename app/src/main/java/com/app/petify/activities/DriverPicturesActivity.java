@@ -184,13 +184,13 @@ public class DriverPicturesActivity extends AppCompatActivity {
             StorageReference ref = storageReference;
             switch (request_type) {
                 case REGISTRO_REQUEST:
-                    ref.child("registro");
+                    ref = ref.child("registro");
                     break;
                 case SEGURO_REQUEST:
-                    ref.child("seguro");
+                    ref = ref.child("seguro");
                     break;
                 case AUTO_REQUEST:
-                    ref.child("auto");
+                    ref = ref.child("auto");
                     break;
             }
             ref.putFile(localFilePath)
