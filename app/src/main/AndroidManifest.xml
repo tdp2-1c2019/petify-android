@@ -18,6 +18,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.CargarViajeActivity"
+            android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.NewTripActivity"
@@ -35,6 +36,7 @@
 
         <activity
             android:name=".activities.MainActivity"
+            android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
