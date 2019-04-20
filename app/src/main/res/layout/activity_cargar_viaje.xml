@@ -37,16 +37,19 @@
                 android:layout_weight="1"
                 android:text="Origen: Estacion de Castelar"
                 android:textColor="@color/grey"
+                android:textSize="17dp"
                 android:theme="@style/Texto" />
 
             <TextView
                 android:id="@+id/destination_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
                 android:layout_weight="1"
                 android:text="Destino: Estacion de Ituzaingo"
                 android:textColor="@color/grey"
+                android:textSize="17dp"
                 android:theme="@style/Texto" />
         </LinearLayout>
 
@@ -55,14 +58,39 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginRight="@dimen/_5sdp">
+        android:layout_marginHorizontal="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_5sdp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textChofer"
+                    android:layout_width="155dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:layout_weight="1"
+                    android:text="Chofer"
+                    android:theme="@style/Texto" />
+
+                <Spinner
+                    android:id="@+id/spinnerChofer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:layout_weight="1"
+                    android:entries="@array/cantM"
+                    android:textAlignment="textEnd"
+                    android:theme="@style/Spinner" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -85,6 +113,7 @@
                     android:layout_margin="@dimen/_10sdp"
                     android:layout_weight="1"
                     android:entries="@array/cantM"
+                    android:textAlignment="textEnd"
                     android:theme="@style/Spinner" />
 
             </LinearLayout>
@@ -134,6 +163,7 @@
                     android:layout_margin="@dimen/_10sdp"
                     android:layout_weight="1"
                     android:entries="@array/formaP"
+                    android:textAlignment="textEnd"
                     android:theme="@style/Spinner" />
 
             </LinearLayout>
@@ -148,7 +178,8 @@
                     style="@style/Textbox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_marginHorizontal="@dimen/_5sdp"
+                    android:layout_marginBottom="@dimen/_5sdp"
                     android:layout_weight="1"
                     android:textColorHint="@color/grey"
                     android:theme="@style/Textbox"
@@ -157,7 +188,7 @@
                     <EditText
                         android:id="@+id/editText"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
+                        android:layout_height="120dp"
                         android:layout_weight="1"
                         android:ems="10"
                         android:gravity="top"
@@ -180,11 +211,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/solicitar_viaje"
+            android:layout_marginTop="@dimen/_5sdp"
             android:text="$123.50"
             android:textAlignment="center"
             android:textColor="@color/dark"
             android:textSize="50dp"
-            android:layout_marginTop="@dimen/_5sdp"
             android:theme="@style/Texto" />
 
         <Button

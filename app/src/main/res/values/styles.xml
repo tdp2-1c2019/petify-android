@@ -15,8 +15,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
-
+    
     <style name="Title" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/ps_bold</item>
         <item name="android:textSize">45dp</item>
@@ -36,7 +35,7 @@
     </style>
 
     <style name="Texto" parent="android:Widget.TextView">
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">18dp</item>
         <item name="android:textColor">@color/dark</item>
     </style>
 
