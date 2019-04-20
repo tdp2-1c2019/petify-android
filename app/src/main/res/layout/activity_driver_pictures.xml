@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/driver_profile_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/_10sdp"
+    tools:context="com.app.petify.activities.DriverPicturesActivity">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:stretchColumns="0">
+        <TableRow>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/registroText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:gravity="center"
+                    android:text="Registro:"
+                    android:theme="@style/Texto" />
+
+                <Button
+                    android:id="@+id/subirFotoRegistro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:text="subir" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/registroImage"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_margin="@dimen/_5sdp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/default_image" />
+        </TableRow>
+
+        <TableRow>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/seguroText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:gravity="center"
+                    android:text="Seguro:"
+                    android:theme="@style/Texto" />
+
+                <Button
+                    android:id="@+id/subirFotoSeguro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:text="subir" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/seguroImage"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_margin="@dimen/_5sdp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/default_image" />
+        </TableRow>
+
+        <TableRow>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/autoText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:gravity="center"
+                    android:text="Auto y patente:"
+                    android:theme="@style/Texto" />
+
+                <Button
+                    android:id="@+id/subirFotoAuto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:text="subir" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/autoImage"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_margin="@dimen/_5sdp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/default_image" />
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:id="@+id/terminarCarga"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/_5sdp"
+        android:text="Terminar carga"
+        android:textAlignment="center"
+        android:theme="@style/Button" />
+</LinearLayout>

@@ -1,4 +1,4 @@
-package com.app.petify.activities;
+package com.app.petify.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import java.io.InputStream;
 
-class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
 
     public DownloadImageTask(ImageView bmImage) {

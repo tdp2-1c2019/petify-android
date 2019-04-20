@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
                     startActivity(navigationIntent);
                 } else if (userResponse instanceof Driver){
-                    Intent navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
+                    Intent navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
                     startActivity(navigationIntent);
                 }
             } else {
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
                     startActivity(navigationIntent);
                 } else if (userResponse instanceof Driver){
-                    Intent navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
+                    Intent navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
                     startActivity(navigationIntent);
                 }
             } else {
