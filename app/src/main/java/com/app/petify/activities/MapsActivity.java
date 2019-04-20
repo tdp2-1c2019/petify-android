@@ -64,7 +64,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private Button mCargarViaje;
-    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +78,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (!Places.isInitialized()) Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
 
         mCargarViaje = findViewById(R.id.cargar_viaje);
+        mCargarViaje.setVisibility(View.GONE);
         mCargarViaje.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,9 +124,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onError(Status status) {}
         });
-
-        // Conectamos a la db de firebase para tener las coordenadas del chofer
-        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     private void loadTrip() {
@@ -167,6 +164,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         public void onDirectionFailure(Throwable t) {
                         }
                     });
+            mCargarViaje.setVisibility(View.VISIBLE);
+        } else {
+            mCargarViaje.setVisibility(View.GONE);
         }
     }
 
@@ -176,10 +176,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION);
         }
-        mMap = googleMap;
-        mMap.setMyLocationEnabled(true);
 
-        // Obtenemos la ubicacion del usuario y lo zoomeamos ahi inicialmente
+        mMap = googleMap;
+
+        try {
+            locateAndZoomUser();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            locateAndZoomUser();
+        }
+    }
+
+    private void locateAndZoomUser() {
+        mMap.setMyLocationEnabled(true);
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
@@ -193,21 +208,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
-
-        ValueEventListener driverPositionListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                HashMap<String, Double> coordinates = (HashMap<String, Double>) dataSnapshot.getValue();
-                LatLng choferLatLng = new LatLng(coordinates.get("lat"), coordinates.get("lng"));
-                if (choferMarker != null) choferMarker.remove();
-                choferMarker = mMap.addMarker(new MarkerOptions().position(choferLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        mDatabase.child("ubicacion").addValueEventListener(driverPositionListener);
     }
 }
