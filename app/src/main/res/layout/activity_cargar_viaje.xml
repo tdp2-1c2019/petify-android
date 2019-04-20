@@ -180,11 +180,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/solicitar_viaje"
-            android:layout_margin="@dimen/_5sdp"
             android:text="$123.50"
             android:textAlignment="center"
             android:textColor="@color/dark"
             android:textSize="50dp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:theme="@style/Texto" />
 
         <Button
