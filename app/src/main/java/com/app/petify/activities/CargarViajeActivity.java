@@ -73,6 +73,7 @@ public class CargarViajeActivity extends AppCompatActivity {
                 mDatabase.child("viajes").child(viaje.id).setValue(viaje);
 
                 Intent i = new Intent(getBaseContext(), ViajeCursoActivity.class);
+                i.putExtra("VIAJE_ID", viaje.id);
                 startActivity(i);
             }
         });

@@ -4,6 +4,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Driver implements User{
+    public boolean disponible;
+    public double lat;
+    public double lng;
     public String facebookId;
     public String name;
 
