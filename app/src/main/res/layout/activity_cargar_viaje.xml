@@ -86,7 +86,6 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp"
                     android:layout_weight="1"
-                    android:entries="@array/cantM"
                     android:textAlignment="textEnd"
                     android:theme="@style/Spinner" />
 

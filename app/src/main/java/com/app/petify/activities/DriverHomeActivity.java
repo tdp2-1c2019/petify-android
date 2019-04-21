@@ -98,11 +98,11 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
 
-        mDatabase.child("disponibles").child(Profile.getCurrentProfile().getId()).setValue(disponible.isChecked());
+        mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(disponible.isChecked());
         disponible.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mDatabase.child("disponibles").child(Profile.getCurrentProfile().getId()).setValue(disponible.isChecked());
+                mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(disponible.isChecked());
             }
         });
     }
@@ -135,12 +135,12 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onPause() {
         super.onPause();
-        mDatabase.child("disponibles").child(Profile.getCurrentProfile().getId()).setValue(false);
+        mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(false);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mDatabase.child("disponibles").child(Profile.getCurrentProfile().getId()).setValue(true);
+        mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(true);
     }
 }
