@@ -65,15 +65,6 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         disponible = findViewById(R.id.switch2);
 
         logoutButton = findViewById(R.id.logout_button);
-//        logoutButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                fusedLocationClient.removeLocationUpdates(locationCallback);
-//                LoginManager.getInstance().logOut();
-//                Intent navigationIntent = new Intent(DriverHomeActivity.this, MainActivity.class);
-//                startActivity(navigationIntent);
-//            }
-//        });
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -156,10 +147,25 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         if (ContextCompat.checkSelfPermission(DriverHomeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(DriverHomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION);
         }
-        mMap = googleMap;
-        mMap.setMyLocationEnabled(true);
 
-        // Obtenemos la ubicacion del usuario y lo zoomeamos ahi inicialmente
+        mMap = googleMap;
+
+        try {
+            locateAndZoomUser();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            locateAndZoomUser();
+        }
+    }
+
+    private void locateAndZoomUser() {
+        mMap.setMyLocationEnabled(true);
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
