@@ -11,6 +11,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.app.petify.R;
+import com.facebook.Profile;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class CargarViajeActivity extends AppCompatActivity {
 
@@ -45,6 +47,11 @@ public class CargarViajeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(), ViajeCursoActivity.class);
                 startActivity(i);
+                Map<String, Object> m = new HashMap<>();
+                m.put("pasajero", Profile.getCurrentProfile().getId());
+                m.put("chofer", mapUsers.get(choferes.getSelectedItem().toString()));
+                m.put("estado", 0);
+                mDatabase.child("viajes").child(UUID.randomUUID().toString()).setValue(m);
             }
         });
 

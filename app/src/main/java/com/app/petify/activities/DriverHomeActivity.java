@@ -4,9 +4,11 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -27,8 +29,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Iterator;
 
 public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -42,6 +49,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private int LOCATION_PERMISSION = 2;
     private Switch disponible;
     private DatabaseReference mDatabase;
+    private String idTrip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +111,38 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(disponible.isChecked());
+            }
+        });
+
+        mDatabase.child("viajes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Boolean hasNewTrip = false;
+                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                DataSnapshot next = null;
+                while (!hasNewTrip && iterator.hasNext()) {
+                    next = iterator.next();
+                    hasNewTrip = next.child("chofer").getValue().equals(Profile.getCurrentProfile().getId()) && (Long) next.child("estado").getValue() == 0;
+                }
+                if (hasNewTrip) {
+                    idTrip = next.getKey();
+                    findViewById(R.id.cardDisponible).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.cardPopup).setVisibility(View.VISIBLE);
+                } else {
+                    findViewById(R.id.cardDisponible).setVisibility(View.VISIBLE);
+                    findViewById(R.id.cardPopup).setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
+        findViewById(R.id.aceptarViaje).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDatabase.child("viajes").child(idTrip).child("estado").setValue(1);
             }
         });
     }

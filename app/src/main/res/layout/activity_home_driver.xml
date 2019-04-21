@@ -28,6 +28,59 @@
             android:theme="@style/Title" />
 
         <android.support.v7.widget.CardView
+            android:id="@+id/cardPopup"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:padding="@dimen/_10sdp"
+            android:visibility="invisible">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/newtripEstado"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:text="Nuevo viaje"
+                    android:textAlignment="center"
+                    android:theme="@style/Texto" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true">
+
+                    <Button
+                        android:id="@+id/aceptarViaje"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_weight="1"
+                        android:text="Aceptar"
+                        android:theme="@style/Button" />
+
+                    <Button
+                        android:id="@+id/rechazarViaje"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toRightOf="@+id/aceptarViaje"
+                        android:layout_weight="1"
+                        android:text="Rechazar"
+                        android:theme="@style/ButtonCancel" />
+                </LinearLayout>
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardDisponible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">

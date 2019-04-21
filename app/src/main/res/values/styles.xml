@@ -52,5 +52,12 @@
         <item name="android:textSize">15dp</item>
     </style>
 
+    <style name="ButtonCancel" parent="android:Widget.Button">
+        <item name="android:backgroundTint">@color/red</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:fontFamily">@font/ps_bold</item>
+        <item name="android:textSize">15dp</item>
+    </style>
+
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/grey</color>
 </resources>
