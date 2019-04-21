@@ -92,7 +92,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textChofer"
+                    android:id="@+id/chofer_text"
                     android:layout_width="155dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp"
@@ -101,7 +101,7 @@
                     android:theme="@style/Texto" />
 
                 <Spinner
-                    android:id="@+id/spinnerChofer"
+                    android:id="@+id/chofer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp"
@@ -117,7 +117,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/cantidad_mascotas_text"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp"
@@ -126,7 +126,7 @@
                     android:theme="@style/Texto" />
 
                 <Spinner
-                    android:id="@+id/spinner"
+                    android:id="@+id/cantidad_mascotas"
                     android:layout_width="30dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp"
@@ -143,7 +143,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/viaja_acompanante_text"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp"
@@ -152,7 +152,7 @@
                     android:theme="@style/Texto" />
 
                 <Switch
-                    android:id="@+id/switch1"
+                    android:id="@+id/viaja_acompanante"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp"
@@ -167,7 +167,7 @@
                 android:weightSum="2">
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/forma_pago_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp"
@@ -176,7 +176,7 @@
                     android:theme="@style/Texto" />
 
                 <Spinner
-                    android:id="@+id/spinner2"
+                    android:id="@+id/forma_pago"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp"
@@ -205,7 +205,7 @@
                     app:boxStrokeColor="@color/grey">
 
                     <EditText
-                        android:id="@+id/editText"
+                        android:id="@+id/observaciones"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
                         android:layout_weight="1"
@@ -226,7 +226,7 @@
         android:layout_marginBottom="8dp">
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/precio_estimado_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/solicitar_viaje"

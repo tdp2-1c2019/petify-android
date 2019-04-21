@@ -15,6 +15,7 @@ import android.widget.Switch;
 
 import com.app.petify.R;
 import com.app.petify.models.Driver;
+import com.app.petify.models.Viaje;
 import com.app.petify.utils.LocalStorage;
 import com.facebook.Profile;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -142,7 +143,9 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         findViewById(R.id.aceptarViaje).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDatabase.child("viajes").child(idTrip).child("estado").setValue(1);
+                // Se asigna y se pone como yendo al mismo tiempo porque todavia no tenemos viajes diferidos
+                mDatabase.child("viajes").child(idTrip).child("estado").setValue(Viaje.CHOFER_ASIGNADO);
+                mDatabase.child("viajes").child(idTrip).child("estado").setValue(Viaje.CHOFER_YENDO);
             }
         });
     }
