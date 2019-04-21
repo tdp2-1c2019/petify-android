@@ -35,7 +35,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_10sdp"
                 android:layout_weight="1"
-                android:text="Origen: Estacion de Castelar"
                 android:textColor="@color/grey"
                 android:textSize="17dp"
                 android:theme="@style/Texto" />
@@ -47,7 +46,28 @@
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_10sdp"
                 android:layout_weight="1"
-                android:text="Destino: Estacion de Ituzaingo"
+                android:textColor="@color/grey"
+                android:textSize="17dp"
+                android:theme="@style/Texto" />
+
+            <TextView
+                android:id="@+id/distance_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_weight="1"
+                android:textColor="@color/grey"
+                android:textSize="17dp"
+                android:theme="@style/Texto" />
+
+            <TextView
+                android:id="@+id/duration_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_weight="1"
                 android:textColor="@color/grey"
                 android:textSize="17dp"
                 android:theme="@style/Texto" />

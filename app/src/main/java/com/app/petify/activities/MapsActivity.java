@@ -53,6 +53,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Place origin;
     private Place destination;
     private Polyline trip;
+    private String duration;
+    private String distance;
 
     private GoogleMap mMap;
     private Button mCargarViaje;
@@ -82,6 +84,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 intent.putExtra("DESTINATION_ADDRESS", destination.getName());
                 intent.putExtra("DESTINATION_LAT", destination.getLatLng().latitude);
                 intent.putExtra("DESTINATION_LNG", destination.getLatLng().longitude);
+                intent.putExtra("DURATION", duration);
+                intent.putExtra("DISTANCE", distance);
                 startActivity(intent);
             }
         });
@@ -142,6 +146,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         public void onDirectionSuccess(Direction direction, String rawBody) {
                             if (direction.isOK()) {
                                 Leg leg = direction.getRouteList().get(0).getLegList().get(0);
+                                duration = leg.getDuration().getText();
+                                distance = leg.getDistance().getText();
                                 ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
                                 PolylineOptions polylineOptions = DirectionConverter.createPolyline(MapsActivity.this, directionPositionList, 5, Color.BLUE);
                                 // Dibujamos el recorrido

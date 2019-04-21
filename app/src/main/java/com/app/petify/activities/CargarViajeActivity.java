@@ -26,12 +26,14 @@ public class CargarViajeActivity extends AppCompatActivity {
 
     private Button mButton;
 
-    String origin_address;
-    Double origin_latitude;
-    Double origin_longitude;
-    String destination_address;
-    Double destination_latitude;
-    Double destination_longitude;
+    private String origin_address;
+    private Double origin_latitude;
+    private Double origin_longitude;
+    private String destination_address;
+    private Double destination_latitude;
+    private Double destination_longitude;
+    private String duration;
+    private String distance;
     private DatabaseReference mDatabase;
     private Spinner choferes;
     private Map<String, String> mapUsers = new HashMap<>();
@@ -62,11 +64,18 @@ public class CargarViajeActivity extends AppCompatActivity {
         destination_address = intent.getStringExtra("DESTINATION_ADDRESS");
         destination_latitude = intent.getDoubleExtra("DESTINATION_LAT", 0);
         destination_longitude = intent.getDoubleExtra("DESTINATION_LNG", 0);
+        duration = intent.getStringExtra("DURATION");
+        distance = intent.getStringExtra("DISTANCE");
+
 
         TextView mOriginText = findViewById(R.id.origin_text);
         mOriginText.setText("Origen: " + origin_address);
         TextView mDestinationText = findViewById(R.id.destination_text);
         mDestinationText.setText("Destino: " + destination_address);
+        TextView mDurationText = findViewById(R.id.duration_text);
+        mDurationText.setText("Tiempo estimado: " + duration);
+        TextView mDistanceText = findViewById(R.id.distance_text);
+        mDistanceText.setText("Distancia estimada: " + distance);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child("drivers").addListenerForSingleValueEvent(new ValueEventListener() {
