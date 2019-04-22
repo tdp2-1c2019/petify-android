@@ -28,84 +28,107 @@
             android:theme="@style/Title" />
 
         <android.support.v7.widget.CardView
-            android:id="@+id/cardPopup"
+            android:id="@+id/popup"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginHorizontal="@dimen/_5sdp"
             android:layout_marginBottom="@dimen/_5sdp"
             android:padding="@dimen/_10sdp"
             android:visibility="invisible">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/newtripEstado"
+                    android:id="@+id/popup_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:text="Nuevo viaje"
                     android:textAlignment="center"
+                    android:layout_margin="16dp"
+                    android:textColor="@color/dark"
+                    android:theme="@style/Texto" />
+
+                <TextView
+                    android:id="@+id/popup_origen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:layout_margin="16dp"
+                    android:textColor="@color/dark"
+                    android:theme="@style/Texto" />
+
+                <TextView
+                    android:id="@+id/popup_destino"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:layout_margin="16dp"
+                    android:textColor="@color/dark"
                     android:theme="@style/Texto" />
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true">
+                    android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/aceptarViaje"
+                        android:id="@+id/aceptar_viaje"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
                         android:layout_weight="1"
                         android:text="Aceptar"
                         android:theme="@style/Button" />
 
                     <Button
-                        android:id="@+id/rechazarViaje"
+                        android:id="@+id/rechazar_viaje"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_toRightOf="@+id/aceptarViaje"
                         android:layout_weight="1"
                         android:text="Rechazar"
                         android:theme="@style/ButtonCancel" />
+
+                    <Button
+                        android:id="@+id/proxima_etapa_viaje"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:theme="@style/Button" />
                 </LinearLayout>
-            </RelativeLayout>
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
-            android:id="@+id/cardDisponible"
+            android:id="@+id/disponible_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/disponible_text"
                     style="@style/Texto"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
+                    android:layout_weight="1"
                     android:text="Disponible" />
 
                 <Switch
-                    android:id="@+id/switch2"
-                    android:layout_width="match_parent"
+                    android:id="@+id/disponible"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp"
-                    android:layout_toRightOf="@+id/textView6"
-                    android:layout_weight="1"
                     android:checked="true" />
-            </RelativeLayout>
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 

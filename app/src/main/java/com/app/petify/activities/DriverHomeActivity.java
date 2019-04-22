@@ -2,16 +2,20 @@ package com.app.petify.activities;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.app.petify.R;
 import com.app.petify.models.Driver;
@@ -30,27 +34,35 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Iterator;
-
 public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private int LOCATION_PERMISSION = 2;
 
     private GoogleMap mMap;
-    private Button logoutButton;
+    private CardView mDisponibleCard;
+    private Switch mDisponible;
+    private CardView mPopup;
+    private TextView mPopupText;
+    private TextView mPopupOrigen;
+    private TextView mPopupDestino;
+    private Button mPopupButtonAceptar;
+    private Button mPopupButtonCancelar;
+    private Button mPopupButtonAvanzar;
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
     private double wayLatitude = 0.0, wayLongitude = 0.0;
-    private int LOCATION_PERMISSION = 2;
-    private Switch disponible;
-    private DatabaseReference mDatabase;
     private String idTrip;
+    private Viaje viaje;
+
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +74,16 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         mapFragment.getMapAsync(this);
 
         Driver driver = LocalStorage.getDriver();
-        disponible = findViewById(R.id.switch2);
 
-        logoutButton = findViewById(R.id.logout_button);
+        mDisponibleCard = findViewById(R.id.disponible_card);
+        mDisponible = findViewById(R.id.disponible);
+        mPopup = findViewById(R.id.popup);
+        mPopupText = findViewById(R.id.popup_text);
+        mPopupOrigen = findViewById(R.id.popup_origen);
+        mPopupDestino = findViewById(R.id.popup_destino);
+        mPopupButtonAceptar = findViewById(R.id.aceptar_viaje);
+        mPopupButtonCancelar = findViewById(R.id.rechazar_viaje);
+        mPopupButtonAvanzar = findViewById(R.id.proxima_etapa_viaje);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -98,40 +117,150 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
 
-        mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(disponible.isChecked());
-        disponible.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(mDisponible.isChecked());
+        mDisponible.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(disponible.isChecked());
+                mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(mDisponible.isChecked());
             }
         });
 
-        mDatabase.child("viajes").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("viajes").child("d9a96450-956d-44e9-9f65-36c10e029461").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Boolean hasNewTrip = false;
-                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-                DataSnapshot next = null;
-                while (!hasNewTrip && iterator.hasNext()) {
-                    next = iterator.next();
-                    hasNewTrip = next.child("chofer").getValue().equals(Profile.getCurrentProfile().getId()) && (Long) next.child("estado").getValue() == 0;
-                }
-                if (hasNewTrip) {
-                    idTrip = next.getKey();
-                    findViewById(R.id.cardDisponible).setVisibility(View.INVISIBLE);
-                    findViewById(R.id.cardPopup).setVisibility(View.VISIBLE);
-                } else {
-                    findViewById(R.id.cardDisponible).setVisibility(View.VISIBLE);
-                    findViewById(R.id.cardPopup).setVisibility(View.INVISIBLE);
+                Viaje newViaje = dataSnapshot.getValue(Viaje.class);
+
+                if (newViaje.chofer.equals(Profile.getCurrentProfile().getId())) {
+                    viaje = newViaje;
+                    mDatabase.child("viajes").child(viaje.id).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            viaje = dataSnapshot.getValue(Viaje.class);
+
+                            switch (viaje.estado) {
+                                case Viaje.CHOFER_YENDO:
+                                    mPopupText.setVisibility(View.GONE);
+                                    mPopupOrigen.setText("Origen: "+viaje.origin_address);
+                                    mPopupOrigen.setBackgroundColor(Color.CYAN);
+                                    mPopupDestino.setText("Destino: "+viaje.destination_address);
+                                    mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
+                                    mPopupButtonAceptar.setVisibility(View.GONE);
+                                    mPopupButtonCancelar.setVisibility(View.GONE);
+                                    mPopupButtonAvanzar.setText("Llegue");
+                                    mPopupButtonAvanzar.setVisibility(View.VISIBLE);
+                                    mPopupButtonAvanzar.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.CHOFER_EN_PUERTA);
+                                        }
+                                    });
+                                    mPopup.setVisibility(View.VISIBLE);
+                                    mDisponibleCard.setVisibility(View.INVISIBLE);
+                                    break;
+                                case Viaje.CHOFER_EN_PUERTA:
+                                    mPopupText.setVisibility(View.GONE);
+                                    mPopupOrigen.setText("Origen: "+viaje.origin_address);
+                                    mPopupOrigen.setBackgroundColor(Color.CYAN);
+                                    mPopupDestino.setText("Destino: "+viaje.destination_address);
+                                    mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
+                                    mPopupButtonAceptar.setVisibility(View.GONE);
+                                    mPopupButtonCancelar.setVisibility(View.GONE);
+                                    mPopupButtonAvanzar.setText("Arrancamos");
+                                    mPopupButtonAvanzar.setVisibility(View.VISIBLE);
+                                    mPopupButtonAvanzar.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.EN_CURSO);
+                                        }
+                                    });
+                                    mPopup.setVisibility(View.VISIBLE);
+                                    mDisponibleCard.setVisibility(View.INVISIBLE);
+                                    break;
+                                case Viaje.EN_CURSO:
+                                    mPopupText.setVisibility(View.GONE);
+                                    mPopupOrigen.setText("Origen: "+viaje.origin_address);
+                                    mPopupOrigen.setBackgroundColor(Color.TRANSPARENT);
+                                    mPopupDestino.setText("Destino: "+viaje.destination_address);
+                                    mPopupDestino.setBackgroundColor(Color.CYAN);
+                                    mPopupButtonAceptar.setVisibility(View.GONE);
+                                    mPopupButtonCancelar.setVisibility(View.GONE);
+                                    mPopupButtonAvanzar.setVisibility(View.VISIBLE);
+                                    mPopupButtonAvanzar.setText("Termine");
+                                    mPopupButtonAvanzar.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.FINALIZADO);
+                                        }
+                                    });
+                                    mPopup.setVisibility(View.VISIBLE);
+                                    mDisponibleCard.setVisibility(View.INVISIBLE);
+                                    break;
+                                case Viaje.FINALIZADO:
+                                    mDisponibleCard.setVisibility(View.VISIBLE);
+                                    mPopup.setVisibility(View.INVISIBLE);
+                                    break;
+                                case Viaje.RECHAZADO:
+                                    mDisponibleCard.setVisibility(View.VISIBLE);
+                                    mPopup.setVisibility(View.INVISIBLE);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {}
+                    });
+                    mPopupText.setVisibility(View.GONE);
+                    mPopupOrigen.setText("Origen: "+viaje.origin_address);
+                    mPopupOrigen.setBackgroundColor(Color.TRANSPARENT);
+                    mPopupDestino.setText("Destino: "+viaje.destination_address);
+                    mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
+                    mPopupButtonAceptar.setVisibility(View.VISIBLE);
+                    mPopupButtonAceptar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.CHOFER_YENDO);
+                        }
+                    });
+                    mPopupButtonCancelar.setVisibility(View.VISIBLE);
+                    mPopupButtonCancelar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.RECHAZADO);
+                        }
+                    });
+                    mPopupButtonAvanzar.setVisibility(View.GONE);
+                    mPopup.setVisibility(View.VISIBLE);
+                    mDisponibleCard.setVisibility(View.INVISIBLE);
+
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
-        findViewById(R.id.aceptarViaje).setOnClickListener(new View.OnClickListener() {
+        mDatabase.child("viajes").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                // TODO aca copiar el addValueEventListener de arriba
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+        findViewById(R.id.aceptar_viaje).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Se asigna y se pone como yendo al mismo tiempo porque todavia no tenemos viajes diferidos
