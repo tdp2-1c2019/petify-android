@@ -125,9 +125,9 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             }
         });
 
-        mDatabase.child("viajes").child("d9a96450-956d-44e9-9f65-36c10e029461").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("viajes").addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Viaje newViaje = dataSnapshot.getValue(Viaje.class);
 
                 if (newViaje.chofer.equals(Profile.getCurrentProfile().getId())) {
@@ -233,18 +233,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                     mPopupButtonAvanzar.setVisibility(View.GONE);
                     mPopup.setVisibility(View.VISIBLE);
                     mDisponibleCard.setVisibility(View.INVISIBLE);
-
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        });
-
-        mDatabase.child("viajes").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                // TODO aca copiar el addValueEventListener de arriba
             }
 
             @Override
