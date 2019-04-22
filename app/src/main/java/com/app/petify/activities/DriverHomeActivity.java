@@ -200,6 +200,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                                     mPopup.setVisibility(View.INVISIBLE);
                                     break;
                                 case Viaje.RECHAZADO:
+                                case Viaje.CANCELADO:
                                     mDisponibleCard.setVisibility(View.VISIBLE);
                                     mPopup.setVisibility(View.INVISIBLE);
                                     break;

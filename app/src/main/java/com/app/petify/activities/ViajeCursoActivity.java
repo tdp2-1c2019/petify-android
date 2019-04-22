@@ -74,12 +74,24 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         mPopupButton.setVisibility(View.VISIBLE);
                         mPopupButton.setText("Cancelar");
                         mPopupButton.setBackgroundColor(Color.RED);
+                        mPopupButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.CANCELADO);
+                            }
+                        });
                         break;
                     case Viaje.CHOFER_ASIGNADO:
                         mPopupText.setText("Asignamos al chofer "+choferName+" para tu viaje");
                         mPopupButton.setVisibility(View.VISIBLE);
                         mPopupButton.setText("Cancelar");
                         mPopupButton.setBackgroundColor(Color.RED);
+                        mPopupButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.CANCELADO);
+                            }
+                        });
                         break;
                     case Viaje.CHOFER_YENDO:
                         mPopupText.setText(choferName+" llegara en "+viaje.eta+" hacia el origen");
@@ -101,6 +113,10 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         break;
                     case Viaje.RECHAZADO:
                         mPopupText.setText("Tu viaje fue rechazado");
+                        mPopupButton.setVisibility(View.GONE);
+                        break;
+                    case Viaje.CANCELADO:
+                        mPopupText.setText("Cancelaste tu viaje");
                         mPopupButton.setVisibility(View.GONE);
                         break;
                     default:
