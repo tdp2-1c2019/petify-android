@@ -26,7 +26,8 @@ public class Viaje implements Serializable {
     public boolean viajaAcompanante;
     public String formaPago;
     public String observaciones;
-
     public int estado;
     public int eta;
+    public int puntaje_chofer;
+    public int puntaje_pasajero;
 }

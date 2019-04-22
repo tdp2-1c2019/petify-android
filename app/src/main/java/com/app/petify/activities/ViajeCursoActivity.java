@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.app.petify.R;
@@ -22,6 +23,9 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +46,8 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
 
     private FusedLocationProviderClient fusedLocationClient;
     private DatabaseReference mDatabase;
+    private Button mPopupButtonCalificar;
+    private SeekBar mSeekbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +62,24 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
         mPopup = findViewById(R.id.popup);
         mPopupText = findViewById(R.id.popup_text);
         mPopupButton = findViewById(R.id.popup_button);
+        mPopupButtonCalificar = findViewById(R.id.popup_button_calificar);
+
+        mSeekbar = findViewById(R.id.seekBarCalificacion);
+        mSeekbar.incrementProgressBy(1);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         Intent intent = getIntent();
-        String viajeId = intent.getStringExtra("VIAJE_ID");
+        final String viajeId = intent.getStringExtra("VIAJE_ID");
+        final String choferId = intent.getStringExtra("CHOFER_ID");
+
+        mPopupButtonCalificar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDatabase.child("viajes").child(viajeId).child("puntaje_chofer").setValue(mSeekbar.getProgress());
+                mDatabase.child("calificaciones").child(choferId).child(viajeId).child("puntaje").setValue(mSeekbar.getProgress());
+            }
+        });
 
         mDatabase.child("viajes").child(viajeId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -74,6 +93,8 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         mPopupButton.setVisibility(View.VISIBLE);
                         mPopupButton.setText("Cancelar");
                         mPopupButton.setBackgroundColor(Color.RED);
+                        mSeekbar.setVisibility(View.GONE);
+                        mPopupButtonCalificar.setVisibility(View.GONE);
                         mPopupButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -82,10 +103,12 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         });
                         break;
                     case Viaje.CHOFER_ASIGNADO:
-                        mPopupText.setText("Asignamos al chofer "+choferName+" para tu viaje");
+                        mPopupText.setText("Asignamos al chofer " + choferName + " para tu viaje");
                         mPopupButton.setVisibility(View.VISIBLE);
                         mPopupButton.setText("Cancelar");
                         mPopupButton.setBackgroundColor(Color.RED);
+                        mSeekbar.setVisibility(View.GONE);
+                        mPopupButtonCalificar.setVisibility(View.GONE);
                         mPopupButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -94,29 +117,41 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         });
                         break;
                     case Viaje.CHOFER_YENDO:
-                        mPopupText.setText(choferName+" llegara en "+viaje.eta+" hacia el origen");
+                        mPopupText.setText(choferName + " llegara en " + viaje.eta + " hacia el origen");
+                        mSeekbar.setVisibility(View.GONE);
+                        mPopupButtonCalificar.setVisibility(View.GONE);
                         mPopupButton.setVisibility(View.VISIBLE);
                         mPopupButton.setText("Cancelar");
                         mPopupButton.setBackgroundColor(Color.RED);
                         break;
                     case Viaje.CHOFER_EN_PUERTA:
-                        mPopupText.setText(choferName+" esta en el punto de encuentro");
+                        mPopupText.setText(choferName + " esta en el punto de encuentro");
+                        mSeekbar.setVisibility(View.GONE);
+                        mPopupButtonCalificar.setVisibility(View.GONE);
                         mPopupButton.setVisibility(View.GONE);
                         break;
                     case Viaje.EN_CURSO:
-                        mPopupText.setText(choferName+" llegara a destino en "+viaje.eta+" minutos");
+                        mPopupText.setText(choferName + " llegara a destino en " + viaje.eta + " minutos");
+                        mSeekbar.setVisibility(View.GONE);
+                        mPopupButtonCalificar.setVisibility(View.GONE);
                         mPopupButton.setVisibility(View.GONE);
                         break;
                     case Viaje.FINALIZADO:
-                        mPopupText.setText("Califica a "+choferName);
+                        mPopupText.setText("Califica a " + choferName);
+                        mSeekbar.setVisibility(View.VISIBLE);
+                        mPopupButtonCalificar.setVisibility(View.VISIBLE);
                         mPopupButton.setVisibility(View.GONE);
                         break;
                     case Viaje.RECHAZADO:
                         mPopupText.setText("Tu viaje fue rechazado");
+                        mPopupButtonCalificar.setVisibility(View.GONE);
+                        mSeekbar.setVisibility(View.GONE);
                         mPopupButton.setVisibility(View.GONE);
                         break;
                     case Viaje.CANCELADO:
                         mPopupText.setText("Cancelaste tu viaje");
+                        mPopupButtonCalificar.setVisibility(View.GONE);
+                        mSeekbar.setVisibility(View.GONE);
                         mPopupButton.setVisibility(View.GONE);
                         break;
                     default:
@@ -133,12 +168,29 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
                 });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
+        mDatabase.child("drivers").child(choferId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (viaje != null && viaje.estado > 0) {
+                    mMap.clear();
+                    LatLng ll = new LatLng((double) dataSnapshot.child("lat").getValue(), (double) dataSnapshot.child("lng").getValue());
+                    mMap.addMarker(new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }

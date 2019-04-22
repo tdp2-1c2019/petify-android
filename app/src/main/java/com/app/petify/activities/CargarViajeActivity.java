@@ -74,6 +74,7 @@ public class CargarViajeActivity extends AppCompatActivity {
 
                 Intent i = new Intent(getBaseContext(), ViajeCursoActivity.class);
                 i.putExtra("VIAJE_ID", viaje.id);
+                i.putExtra("CHOFER_ID", viaje.chofer);
                 startActivity(i);
             }
         });
