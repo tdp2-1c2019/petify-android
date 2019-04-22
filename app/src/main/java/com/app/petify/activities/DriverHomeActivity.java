@@ -17,6 +17,11 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.model.Leg;
+import com.akexorcist.googledirection.util.DirectionConverter;
 import com.app.petify.R;
 import com.app.petify.models.Driver;
 import com.app.petify.models.Viaje;
@@ -27,12 +32,18 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +51,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyCallback {
     private int LOCATION_PERMISSION = 2;
@@ -63,6 +76,8 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private Viaje viaje;
 
     private DatabaseReference mDatabase;
+    private Polyline trip1;
+    private Polyline trip2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +125,8 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                         wayLongitude = location.getLongitude();
                         mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("lat").setValue(wayLatitude);
                         mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("lng").setValue(wayLongitude);
+                        if (viaje != null)
+                            dibujarCamino(new LatLng(wayLatitude, wayLongitude), new LatLng(viaje.origin_latitude, viaje.origin_longitude), 1);
                     }
                 }
             }
@@ -132,6 +149,13 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
 
                 if (newViaje.chofer.equals(Profile.getCurrentProfile().getId())) {
                     viaje = newViaje;
+                    LatLng origenLatLng = new LatLng(viaje.origin_latitude, viaje.origin_longitude);
+                    mMap.addMarker(new MarkerOptions().position(origenLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                    LatLng destinoLatLng = new LatLng(viaje.destination_latitude, viaje.destination_longitude);
+                    mMap.addMarker(new MarkerOptions().position(destinoLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+
+                    dibujarCamino(origenLatLng, destinoLatLng, 2);
+
                     mDatabase.child("viajes").child(viaje.id).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -140,9 +164,9 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                             switch (viaje.estado) {
                                 case Viaje.CHOFER_YENDO:
                                     mPopupText.setVisibility(View.GONE);
-                                    mPopupOrigen.setText("Origen: "+viaje.origin_address);
+                                    mPopupOrigen.setText("Origen: " + viaje.origin_address);
                                     mPopupOrigen.setBackgroundColor(Color.CYAN);
-                                    mPopupDestino.setText("Destino: "+viaje.destination_address);
+                                    mPopupDestino.setText("Destino: " + viaje.destination_address);
                                     mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
                                     mPopupButtonAceptar.setVisibility(View.GONE);
                                     mPopupButtonCancelar.setVisibility(View.GONE);
@@ -159,9 +183,9 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                                     break;
                                 case Viaje.CHOFER_EN_PUERTA:
                                     mPopupText.setVisibility(View.GONE);
-                                    mPopupOrigen.setText("Origen: "+viaje.origin_address);
+                                    mPopupOrigen.setText("Origen: " + viaje.origin_address);
                                     mPopupOrigen.setBackgroundColor(Color.CYAN);
-                                    mPopupDestino.setText("Destino: "+viaje.destination_address);
+                                    mPopupDestino.setText("Destino: " + viaje.destination_address);
                                     mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
                                     mPopupButtonAceptar.setVisibility(View.GONE);
                                     mPopupButtonCancelar.setVisibility(View.GONE);
@@ -178,9 +202,9 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                                     break;
                                 case Viaje.EN_CURSO:
                                     mPopupText.setVisibility(View.GONE);
-                                    mPopupOrigen.setText("Origen: "+viaje.origin_address);
+                                    mPopupOrigen.setText("Origen: " + viaje.origin_address);
                                     mPopupOrigen.setBackgroundColor(Color.TRANSPARENT);
-                                    mPopupDestino.setText("Destino: "+viaje.destination_address);
+                                    mPopupDestino.setText("Destino: " + viaje.destination_address);
                                     mPopupDestino.setBackgroundColor(Color.CYAN);
                                     mPopupButtonAceptar.setVisibility(View.GONE);
                                     mPopupButtonCancelar.setVisibility(View.GONE);
@@ -210,12 +234,13 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {}
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
                     });
                     mPopupText.setVisibility(View.GONE);
-                    mPopupOrigen.setText("Origen: "+viaje.origin_address);
+                    mPopupOrigen.setText("Origen: " + viaje.origin_address);
                     mPopupOrigen.setBackgroundColor(Color.TRANSPARENT);
-                    mPopupDestino.setText("Destino: "+viaje.destination_address);
+                    mPopupDestino.setText("Destino: " + viaje.destination_address);
                     mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
                     mPopupButtonAceptar.setVisibility(View.VISIBLE);
                     mPopupButtonAceptar.setOnClickListener(new View.OnClickListener() {
@@ -238,16 +263,20 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
 
         findViewById(R.id.aceptar_viaje).setOnClickListener(new View.OnClickListener() {
@@ -310,5 +339,33 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     public void onResume() {
         super.onResume();
         mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(true);
+    }
+
+    private void dibujarCamino(final LatLng o, final LatLng d, final int i) {
+        GoogleDirection.withServerKey(getString(R.string.google_maps_key))
+                .from(o).to(d)
+                .execute(new DirectionCallback() {
+                    @Override
+                    public void onDirectionSuccess(Direction direction, String rawBody) {
+                        if (direction.isOK()) {
+                            Leg leg = direction.getRouteList().get(0).getLegList().get(0);
+//                            String duration = leg.getDuration().getText();
+//                            String distance = leg.getDistance().getText();
+                            ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
+                            PolylineOptions polylineOptions = DirectionConverter.createPolyline(DriverHomeActivity.this, directionPositionList, 5, Color.BLUE);
+                            // Dibujamos el recorrido
+                            if (i == 1) trip1 = mMap.addPolyline(polylineOptions);
+                            else trip2 = mMap.addPolyline(polylineOptions);
+                            // Zoomeamos el recorrido
+                            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                            builder.include(o);
+                            builder.include(d);
+                        }
+                    }
+
+                    @Override
+                    public void onDirectionFailure(Throwable t) {
+                    }
+                });
     }
 }
