@@ -32,7 +32,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -76,8 +75,8 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private Viaje viaje;
 
     private DatabaseReference mDatabase;
-    private Polyline trip1;
-    private Polyline trip2;
+    private Polyline tripYendo;
+    private Polyline tripViaje;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +124,11 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                         wayLongitude = location.getLongitude();
                         mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("lat").setValue(wayLatitude);
                         mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("lng").setValue(wayLongitude);
-                        if (viaje != null)
-                            dibujarCamino(new LatLng(wayLatitude, wayLongitude), new LatLng(viaje.origin_latitude, viaje.origin_longitude), 1);
+                        if (viaje != null) {
+                            if (viaje.estado == Viaje.CHOFER_ASIGNADO ||
+                                    viaje.estado == Viaje.CHOFER_YENDO)
+                                dibujarCamino(new LatLng(wayLatitude, wayLongitude), new LatLng(viaje.origin_latitude, viaje.origin_longitude), 1);
+                        }
                     }
                 }
             }
@@ -154,7 +156,14 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                     LatLng destinoLatLng = new LatLng(viaje.destination_latitude, viaje.destination_longitude);
                     mMap.addMarker(new MarkerOptions().position(destinoLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
-                    dibujarCamino(origenLatLng, destinoLatLng, 2);
+                    if (viaje.estado == Viaje.CHOFER_ASIGNADO ||
+                            viaje.estado == Viaje.CHOFER_YENDO ||
+                            viaje.estado == Viaje.CHOFER_EN_PUERTA ||
+                            viaje.estado == Viaje.EN_CURSO) {
+                        dibujarCamino(origenLatLng, destinoLatLng, 2);
+                    } else {
+                        limpiarMapa(2);
+                    }
 
                     mDatabase.child("viajes").child(viaje.id).addValueEventListener(new ValueEventListener() {
                         @Override
@@ -182,6 +191,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                                     mDisponibleCard.setVisibility(View.INVISIBLE);
                                     break;
                                 case Viaje.CHOFER_EN_PUERTA:
+                                    limpiarMapa(1);
                                     mPopupText.setVisibility(View.GONE);
                                     mPopupOrigen.setText("Origen: " + viaje.origin_address);
                                     mPopupOrigen.setBackgroundColor(Color.CYAN);
@@ -225,6 +235,8 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                                     break;
                                 case Viaje.RECHAZADO:
                                 case Viaje.CANCELADO:
+                                    limpiarMapa(1);
+                                    limpiarMapa(2);
                                     mDisponibleCard.setVisibility(View.VISIBLE);
                                     mPopup.setVisibility(View.INVISIBLE);
                                     break;
@@ -341,6 +353,14 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(true);
     }
 
+    private void limpiarMapa(final int i) {
+        if (tripYendo != null && i == 1) tripYendo.remove();
+        if (tripViaje != null && i == 2) {
+            mMap.clear();
+            tripViaje.remove();
+        }
+    }
+
     private void dibujarCamino(final LatLng o, final LatLng d, final int i) {
         GoogleDirection.withServerKey(getString(R.string.google_maps_key))
                 .from(o).to(d)
@@ -349,13 +369,11 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                     public void onDirectionSuccess(Direction direction, String rawBody) {
                         if (direction.isOK()) {
                             Leg leg = direction.getRouteList().get(0).getLegList().get(0);
-//                            String duration = leg.getDuration().getText();
-//                            String distance = leg.getDistance().getText();
                             ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
                             PolylineOptions polylineOptions = DirectionConverter.createPolyline(DriverHomeActivity.this, directionPositionList, 5, Color.BLUE);
                             // Dibujamos el recorrido
-                            if (i == 1) trip1 = mMap.addPolyline(polylineOptions);
-                            else trip2 = mMap.addPolyline(polylineOptions);
+                            if (i == 1) tripYendo = mMap.addPolyline(polylineOptions);
+                            else tripViaje = mMap.addPolyline(polylineOptions);
                             // Zoomeamos el recorrido
                             LatLngBounds.Builder builder = new LatLngBounds.Builder();
                             builder.include(o);
