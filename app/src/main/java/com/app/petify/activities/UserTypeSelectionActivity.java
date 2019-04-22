@@ -65,7 +65,7 @@ public class UserTypeSelectionActivity extends AppCompatActivity {
             if (statusCode == UserResponse.ServiceStatusCode.SUCCESS) {
                 Client client = response.getServiceResponse();
                 LocalStorage.setClient(client);
-                Intent navigationIntent = new Intent(UserTypeSelectionActivity.this, ClientHomeActivity.class);
+                Intent navigationIntent = new Intent(UserTypeSelectionActivity.this, MapsActivity.class);
                 startActivity(navigationIntent);
             } else {
                 this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Ocurrio un error registrando el cliente", Snackbar.LENGTH_SHORT);
@@ -97,7 +97,7 @@ public class UserTypeSelectionActivity extends AppCompatActivity {
             if (statusCode == UserResponse.ServiceStatusCode.SUCCESS) {
                 Driver driver = response.getServiceResponse();
                 LocalStorage.setDriver(driver);
-                Intent navigationIntent = new Intent(UserTypeSelectionActivity.this, DriverHomeActivity.class);
+                Intent navigationIntent = new Intent(UserTypeSelectionActivity.this, DriverPicturesActivity.class);
                 startActivity(navigationIntent);
             } else {
                 this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Ocurrio un error registrando el chofer", Snackbar.LENGTH_SHORT);
