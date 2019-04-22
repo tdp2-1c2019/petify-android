@@ -59,7 +59,7 @@ public class CargarViajeActivity extends AppCompatActivity {
                 viaje.id = UUID.randomUUID().toString();
                 viaje.pasajero = Profile.getCurrentProfile().getId();
                 viaje.chofer = mapUsers.get(mChofer.getSelectedItem().toString());
-                viaje.estado = Viaje.CARGADO;
+                viaje.estado = Viaje.CHOFER_ASIGNADO; // TODO en chofer se asigna despues
                 viaje.origin_address = origin_address;
                 viaje.origin_latitude = origin_latitude;
                 viaje.origin_longitude = origin_longitude;
