@@ -57,6 +57,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String distance;
 
     private GoogleMap mMap;
+    private AutocompleteSupportFragment mOriginAutocompleteFragment;
+    private AutocompleteSupportFragment mDestinationAutocompleteFragment;
     private Button mCargarViaje;
 
     @Override
@@ -90,12 +92,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        AutocompleteSupportFragment originAutocompleteFragment = (AutocompleteSupportFragment)
+        mOriginAutocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.origin_autocomplete_fragment);
-        originAutocompleteFragment.setCountry("AR");
-        originAutocompleteFragment.setHint("Origen");
-        originAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
-        originAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+        mOriginAutocompleteFragment.setCountry("AR");
+        mOriginAutocompleteFragment.setHint("Origen");
+        mOriginAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        mOriginAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 origin = place;
@@ -108,12 +110,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        AutocompleteSupportFragment destinationAutocompleteFragment = (AutocompleteSupportFragment)
+        mDestinationAutocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.destination_autocomplete_fragment);
-        destinationAutocompleteFragment.setCountry("AR");
-        destinationAutocompleteFragment.setHint("Destino");
-        destinationAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
-        destinationAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+        mDestinationAutocompleteFragment.setCountry("AR");
+        mDestinationAutocompleteFragment.setHint("Destino");
+        mDestinationAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        mDestinationAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 destination = place;
@@ -125,6 +127,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onError(Status status) {
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mOriginAutocompleteFragment.setText("");
+        mDestinationAutocompleteFragment.setText("");
+        if (mMap != null) {
+            mMap.clear();
+            try{
+                locateAndZoomUser();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void loadTrip() {
