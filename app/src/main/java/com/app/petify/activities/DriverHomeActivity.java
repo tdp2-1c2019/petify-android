@@ -126,8 +126,11 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                         mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("lng").setValue(wayLongitude);
                         if (viaje != null) {
                             if (viaje.estado == Viaje.CHOFER_ASIGNADO ||
-                                    viaje.estado == Viaje.CHOFER_YENDO)
+                                    viaje.estado == Viaje.CHOFER_YENDO) {
                                 dibujarCamino(new LatLng(wayLatitude, wayLongitude), new LatLng(viaje.origin_latitude, viaje.origin_longitude), 1);
+                            } else {
+                                limpiarMapa(1);
+                            }
                         }
                     }
                 }
@@ -172,17 +175,17 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private void procesarViaje(Viaje newViaje) {
         if (newViaje.chofer.equals(Profile.getCurrentProfile().getId())) {
             viaje = newViaje;
-            LatLng origenLatLng = new LatLng(viaje.origin_latitude, viaje.origin_longitude);
-            mMap.addMarker(new MarkerOptions().position(origenLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-            LatLng destinoLatLng = new LatLng(viaje.destination_latitude, viaje.destination_longitude);
-            mMap.addMarker(new MarkerOptions().position(destinoLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
             if (viaje.estado == Viaje.CHOFER_ASIGNADO ||
                     viaje.estado == Viaje.CHOFER_YENDO ||
                     viaje.estado == Viaje.CHOFER_EN_PUERTA ||
                     viaje.estado == Viaje.EN_CURSO) {
-                dibujarCamino(origenLatLng, destinoLatLng, 2);
+                LatLng origenLatLng = new LatLng(viaje.origin_latitude, viaje.origin_longitude);
+                mMap.addMarker(new MarkerOptions().position(origenLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                LatLng destinoLatLng = new LatLng(viaje.destination_latitude, viaje.destination_longitude);
+                mMap.addMarker(new MarkerOptions().position(destinoLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
+                dibujarCamino(origenLatLng, destinoLatLng, 2);
             } else {
                 limpiarMapa(2);
             }
@@ -305,6 +308,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         }
 
         mMap = googleMap;
+        mMap.clear();
 
         try {
             locateAndZoomUser();
@@ -335,18 +339,6 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                 }
             }
         });
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(false);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(true);
     }
 
     private void limpiarMapa(final int ida) {
