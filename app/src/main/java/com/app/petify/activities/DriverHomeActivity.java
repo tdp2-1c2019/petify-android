@@ -148,130 +148,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Viaje newViaje = dataSnapshot.getValue(Viaje.class);
-
-                if (newViaje.chofer.equals(Profile.getCurrentProfile().getId())) {
-                    viaje = newViaje;
-                    LatLng origenLatLng = new LatLng(viaje.origin_latitude, viaje.origin_longitude);
-                    mMap.addMarker(new MarkerOptions().position(origenLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                    LatLng destinoLatLng = new LatLng(viaje.destination_latitude, viaje.destination_longitude);
-                    mMap.addMarker(new MarkerOptions().position(destinoLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-
-                    if (viaje.estado == Viaje.CHOFER_ASIGNADO ||
-                            viaje.estado == Viaje.CHOFER_YENDO ||
-                            viaje.estado == Viaje.CHOFER_EN_PUERTA ||
-                            viaje.estado == Viaje.EN_CURSO) {
-                        dibujarCamino(origenLatLng, destinoLatLng, 2);
-                    } else {
-                        limpiarMapa(2);
-                    }
-
-                    mDatabase.child("viajes").child(viaje.id).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            viaje = dataSnapshot.getValue(Viaje.class);
-
-                            switch (viaje.estado) {
-                                case Viaje.CHOFER_YENDO:
-                                    mPopupText.setVisibility(View.GONE);
-                                    mPopupOrigen.setText("Origen: " + viaje.origin_address);
-                                    mPopupOrigen.setBackgroundColor(Color.CYAN);
-                                    mPopupDestino.setText("Destino: " + viaje.destination_address);
-                                    mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
-                                    mPopupButtonAceptar.setVisibility(View.GONE);
-                                    mPopupButtonCancelar.setVisibility(View.GONE);
-                                    mPopupButtonAvanzar.setText("Llegue");
-                                    mPopupButtonAvanzar.setVisibility(View.VISIBLE);
-                                    mPopupButtonAvanzar.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.CHOFER_EN_PUERTA);
-                                        }
-                                    });
-                                    mPopup.setVisibility(View.VISIBLE);
-                                    mDisponibleCard.setVisibility(View.INVISIBLE);
-                                    break;
-                                case Viaje.CHOFER_EN_PUERTA:
-                                    limpiarMapa(1);
-                                    mPopupText.setVisibility(View.GONE);
-                                    mPopupOrigen.setText("Origen: " + viaje.origin_address);
-                                    mPopupOrigen.setBackgroundColor(Color.CYAN);
-                                    mPopupDestino.setText("Destino: " + viaje.destination_address);
-                                    mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
-                                    mPopupButtonAceptar.setVisibility(View.GONE);
-                                    mPopupButtonCancelar.setVisibility(View.GONE);
-                                    mPopupButtonAvanzar.setText("Arrancamos");
-                                    mPopupButtonAvanzar.setVisibility(View.VISIBLE);
-                                    mPopupButtonAvanzar.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.EN_CURSO);
-                                        }
-                                    });
-                                    mPopup.setVisibility(View.VISIBLE);
-                                    mDisponibleCard.setVisibility(View.INVISIBLE);
-                                    break;
-                                case Viaje.EN_CURSO:
-                                    mPopupText.setVisibility(View.GONE);
-                                    mPopupOrigen.setText("Origen: " + viaje.origin_address);
-                                    mPopupOrigen.setBackgroundColor(Color.TRANSPARENT);
-                                    mPopupDestino.setText("Destino: " + viaje.destination_address);
-                                    mPopupDestino.setBackgroundColor(Color.CYAN);
-                                    mPopupButtonAceptar.setVisibility(View.GONE);
-                                    mPopupButtonCancelar.setVisibility(View.GONE);
-                                    mPopupButtonAvanzar.setVisibility(View.VISIBLE);
-                                    mPopupButtonAvanzar.setText("Termine");
-                                    mPopupButtonAvanzar.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.FINALIZADO);
-                                        }
-                                    });
-                                    mPopup.setVisibility(View.VISIBLE);
-                                    mDisponibleCard.setVisibility(View.INVISIBLE);
-                                    break;
-                                case Viaje.FINALIZADO:
-                                    mDisponibleCard.setVisibility(View.VISIBLE);
-                                    mPopup.setVisibility(View.INVISIBLE);
-                                    break;
-                                case Viaje.RECHAZADO:
-                                case Viaje.CANCELADO:
-                                    limpiarMapa(1);
-                                    limpiarMapa(2);
-                                    mDisponibleCard.setVisibility(View.VISIBLE);
-                                    mPopup.setVisibility(View.INVISIBLE);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-                    mPopupText.setVisibility(View.GONE);
-                    mPopupOrigen.setText("Origen: " + viaje.origin_address);
-                    mPopupOrigen.setBackgroundColor(Color.TRANSPARENT);
-                    mPopupDestino.setText("Destino: " + viaje.destination_address);
-                    mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
-                    mPopupButtonAceptar.setVisibility(View.VISIBLE);
-                    mPopupButtonAceptar.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.CHOFER_YENDO);
-                        }
-                    });
-                    mPopupButtonCancelar.setVisibility(View.VISIBLE);
-                    mPopupButtonCancelar.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.RECHAZADO);
-                        }
-                    });
-                    mPopupButtonAvanzar.setVisibility(View.GONE);
-                    mPopup.setVisibility(View.VISIBLE);
-                    mDisponibleCard.setVisibility(View.INVISIBLE);
-                }
+                procesarViaje(newViaje);
             }
 
             @Override
@@ -290,15 +167,134 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
 
-        findViewById(R.id.aceptar_viaje).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Se asigna y se pone como yendo al mismo tiempo porque todavia no tenemos viajes diferidos
-                mDatabase.child("viajes").child(idTrip).child("estado").setValue(Viaje.CHOFER_ASIGNADO);
-                mDatabase.child("viajes").child(idTrip).child("estado").setValue(Viaje.CHOFER_YENDO);
+    private void procesarViaje(Viaje newViaje) {
+        if (newViaje.chofer.equals(Profile.getCurrentProfile().getId())) {
+            viaje = newViaje;
+            LatLng origenLatLng = new LatLng(viaje.origin_latitude, viaje.origin_longitude);
+            mMap.addMarker(new MarkerOptions().position(origenLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            LatLng destinoLatLng = new LatLng(viaje.destination_latitude, viaje.destination_longitude);
+            mMap.addMarker(new MarkerOptions().position(destinoLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+            if (viaje.estado == Viaje.CHOFER_ASIGNADO ||
+                    viaje.estado == Viaje.CHOFER_YENDO ||
+                    viaje.estado == Viaje.CHOFER_EN_PUERTA ||
+                    viaje.estado == Viaje.EN_CURSO) {
+                dibujarCamino(origenLatLng, destinoLatLng, 2);
+
+            } else {
+                limpiarMapa(2);
             }
-        });
+
+            mDatabase.child("viajes").child(viaje.id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    viaje = dataSnapshot.getValue(Viaje.class);
+
+                    switch (viaje.estado) {
+                        case Viaje.CHOFER_YENDO:
+                            mPopupText.setVisibility(View.GONE);
+                            mPopupOrigen.setText("Origen: " + viaje.origin_address);
+                            mPopupOrigen.setBackgroundColor(Color.CYAN);
+                            mPopupDestino.setText("Destino: " + viaje.destination_address);
+                            mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
+                            mPopupButtonAceptar.setVisibility(View.GONE);
+                            mPopupButtonCancelar.setVisibility(View.GONE);
+                            mPopupButtonAvanzar.setText("Llegue");
+                            mPopupButtonAvanzar.setVisibility(View.VISIBLE);
+                            mPopupButtonAvanzar.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.CHOFER_EN_PUERTA);
+                                }
+                            });
+                            mPopup.setVisibility(View.VISIBLE);
+                            mDisponibleCard.setVisibility(View.INVISIBLE);
+                            break;
+                        case Viaje.CHOFER_EN_PUERTA:
+                            limpiarMapa(1);
+                            mPopupText.setVisibility(View.GONE);
+                            mPopupOrigen.setText("Origen: " + viaje.origin_address);
+                            mPopupOrigen.setBackgroundColor(Color.CYAN);
+                            mPopupDestino.setText("Destino: " + viaje.destination_address);
+                            mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
+                            mPopupButtonAceptar.setVisibility(View.GONE);
+                            mPopupButtonCancelar.setVisibility(View.GONE);
+                            mPopupButtonAvanzar.setText("Arrancamos");
+                            mPopupButtonAvanzar.setVisibility(View.VISIBLE);
+                            mPopupButtonAvanzar.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.EN_CURSO);
+                                }
+                            });
+                            mPopup.setVisibility(View.VISIBLE);
+                            mDisponibleCard.setVisibility(View.INVISIBLE);
+                            break;
+                        case Viaje.EN_CURSO:
+                            limpiarMapa(1);
+                            mPopupText.setVisibility(View.GONE);
+                            mPopupOrigen.setText("Origen: " + viaje.origin_address);
+                            mPopupOrigen.setBackgroundColor(Color.TRANSPARENT);
+                            mPopupDestino.setText("Destino: " + viaje.destination_address);
+                            mPopupDestino.setBackgroundColor(Color.CYAN);
+                            mPopupButtonAceptar.setVisibility(View.GONE);
+                            mPopupButtonCancelar.setVisibility(View.GONE);
+                            mPopupButtonAvanzar.setVisibility(View.VISIBLE);
+                            mPopupButtonAvanzar.setText("Termine");
+                            mPopupButtonAvanzar.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.FINALIZADO);
+                                }
+                            });
+                            mPopup.setVisibility(View.VISIBLE);
+                            mDisponibleCard.setVisibility(View.INVISIBLE);
+                            break;
+                        case Viaje.FINALIZADO:
+                            mDisponibleCard.setVisibility(View.VISIBLE);
+                            mPopup.setVisibility(View.INVISIBLE);
+                            break;
+                        case Viaje.RECHAZADO:
+                        case Viaje.CANCELADO:
+                            limpiarMapa(1);
+                            limpiarMapa(2);
+                            mDisponibleCard.setVisibility(View.VISIBLE);
+                            mPopup.setVisibility(View.INVISIBLE);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+            mPopupText.setVisibility(View.GONE);
+            mPopupOrigen.setText("Origen: " + viaje.origin_address);
+            mPopupOrigen.setBackgroundColor(Color.TRANSPARENT);
+            mPopupDestino.setText("Destino: " + viaje.destination_address);
+            mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
+            mPopupButtonAceptar.setVisibility(View.VISIBLE);
+            mPopupButtonAceptar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.CHOFER_YENDO);
+                }
+            });
+            mPopupButtonCancelar.setVisibility(View.VISIBLE);
+            mPopupButtonCancelar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.RECHAZADO);
+                }
+            });
+            mPopupButtonAvanzar.setVisibility(View.GONE);
+            mPopup.setVisibility(View.VISIBLE);
+            mDisponibleCard.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -353,17 +349,17 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(true);
     }
 
-    private void limpiarMapa(final int i) {
-        if (tripYendo != null && i == 1) tripYendo.remove();
-        if (tripViaje != null && i == 2) {
+    private void limpiarMapa(final int ida) {
+        if (tripYendo != null && ida == 1) tripYendo.remove();
+        if (tripViaje != null && ida == 2) {
             mMap.clear();
             tripViaje.remove();
         }
     }
 
-    private void dibujarCamino(final LatLng o, final LatLng d, final int i) {
+    private void dibujarCamino(final LatLng origin, final LatLng destination, final int ida) {
         GoogleDirection.withServerKey(getString(R.string.google_maps_key))
-                .from(o).to(d)
+                .from(origin).to(destination)
                 .execute(new DirectionCallback() {
                     @Override
                     public void onDirectionSuccess(Direction direction, String rawBody) {
@@ -372,12 +368,22 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                             ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
                             PolylineOptions polylineOptions = DirectionConverter.createPolyline(DriverHomeActivity.this, directionPositionList, 5, Color.BLUE);
                             // Dibujamos el recorrido
-                            if (i == 1) tripYendo = mMap.addPolyline(polylineOptions);
-                            else tripViaje = mMap.addPolyline(polylineOptions);
+                            if (ida == 1) {
+                                if (tripYendo != null) tripYendo.remove();
+                                tripYendo = mMap.addPolyline(polylineOptions);
+                            } else {
+                                if (tripViaje != null) tripViaje.remove();
+                                tripViaje = mMap.addPolyline(polylineOptions);
+                            }
+                            // Informamos ETA
+                            if (viaje != null &&
+                                    ((ida == 1 && (viaje.estado == Viaje.CHOFER_ASIGNADO || viaje.estado == Viaje.CHOFER_YENDO)) ||
+                                            (ida == 2 && viaje.estado == Viaje.EN_CURSO)))
+                                mDatabase.child("viajes").child(viaje.id).child("eta").setValue(leg.getDuration().getText());
                             // Zoomeamos el recorrido
                             LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                            builder.include(o);
-                            builder.include(d);
+                            builder.include(origin);
+                            builder.include(destination);
                         }
                     }
 

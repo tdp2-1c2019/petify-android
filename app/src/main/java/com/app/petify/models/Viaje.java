@@ -2,7 +2,7 @@ package com.app.petify.models;
 
 import java.io.Serializable;
 
-public class Viaje implements Serializable {
+public class    Viaje implements Serializable {
     public static final int CARGADO = 0;
     public static final int CHOFER_ASIGNADO = 1;
     public static final int CHOFER_YENDO = 2;
@@ -27,7 +27,7 @@ public class Viaje implements Serializable {
     public String formaPago;
     public String observaciones;
     public int estado;
-    public int eta;
+    public String eta;
     public int puntaje_chofer;
     public int puntaje_pasajero;
 }
