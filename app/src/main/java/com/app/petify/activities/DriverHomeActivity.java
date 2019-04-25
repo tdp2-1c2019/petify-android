@@ -256,6 +256,8 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                             mDisponibleCard.setVisibility(View.INVISIBLE);
                             break;
                         case Viaje.FINALIZADO:
+                            limpiarMapa(1);
+                            limpiarMapa(2);
                             mDisponibleCard.setVisibility(View.VISIBLE);
                             mPopup.setVisibility(View.INVISIBLE);
                             break;
