@@ -44,9 +44,6 @@
         </activity>
         <activity android:name=".activities.MapsActivity" />
         <activity
-            android:name=".activities.ClientHomeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activities.DriverHomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
