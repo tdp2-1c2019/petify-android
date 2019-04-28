@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -29,6 +30,11 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     public CallbackManager callbackManager;
 
     private int INTERNET_PERMISSION = 1;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
@@ -168,8 +176,23 @@ public class MainActivity extends AppCompatActivity {
                     Intent navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
                     startActivity(navigationIntent);
                 } else if (userResponse instanceof Driver) {
-                    Intent navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
-                    startActivity(navigationIntent);
+                    mDatabase.child("drivers").child(((Driver) userResponse).facebookId).child("habilitado").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if ((Boolean) dataSnapshot.getValue()) {
+                                Intent navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
+                                startActivity(navigationIntent);
+                            } else {
+                                Intent navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
+                                startActivity(navigationIntent);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             } else {
                 Intent navigationIntent = new Intent(MainActivity.this, UserTypeSelectionActivity.class);
@@ -206,8 +229,23 @@ public class MainActivity extends AppCompatActivity {
                     Intent navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
                     startActivity(navigationIntent);
                 } else if (userResponse instanceof Driver) {
-                    Intent navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
-                    startActivity(navigationIntent);
+                    mDatabase.child("drivers").child(((Driver) userResponse).facebookId).child("habilitado").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if ((Boolean) dataSnapshot.getValue()) {
+                                Intent navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
+                                startActivity(navigationIntent);
+                            } else {
+                                Intent navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
+                                startActivity(navigationIntent);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             } else {
                 this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Ocurrio un error obteniendo su sesion de Facebook", Snackbar.LENGTH_SHORT);
