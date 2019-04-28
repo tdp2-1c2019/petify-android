@@ -50,14 +50,52 @@
                     android:textColor="@color/dark"
                     android:theme="@style/Texto" />
 
-                <SeekBar
-                    android:id="@+id/seekBarCalificacion"
+                <RelativeLayout
+                    android:id="@+id/pStarLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_10sdp"
-                    android:max="4"
-                    android:progress="1"
-                    android:visibility="visible" />
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/pStar1"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/stardisabled" />
+
+                        <Button
+                            android:id="@+id/pStar2"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/stardisabled" />
+
+                        <Button
+                            android:id="@+id/pStar3"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/stardisabled" />
+
+                        <Button
+                            android:id="@+id/pStar4"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/stardisabled" />
+
+                        <Button
+                            android:id="@+id/pStar5"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/stardisabled" />
+                    </LinearLayout>
+                </RelativeLayout>
 
                 <Button
                     android:id="@+id/popup_button"
