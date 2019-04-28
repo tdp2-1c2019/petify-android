@@ -46,8 +46,8 @@
                     android:id="@+id/popup_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
                     android:layout_margin="16dp"
+                    android:textAlignment="center"
                     android:textColor="@color/dark"
                     android:theme="@style/Texto" />
 
@@ -55,8 +55,8 @@
                     android:id="@+id/popup_origen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
                     android:layout_margin="16dp"
+                    android:textAlignment="center"
                     android:textColor="@color/dark"
                     android:theme="@style/Texto" />
 
@@ -64,11 +64,57 @@
                     android:id="@+id/popup_destino"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
                     android:layout_margin="16dp"
+                    android:textAlignment="center"
                     android:textColor="@color/dark"
                     android:theme="@style/Texto" />
 
+                <RelativeLayout
+                    android:id="@+id/chStarLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <Button
+                            android:id="@+id/chStar1"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/stardisabled" />
+
+                        <Button
+                            android:id="@+id/chStar2"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/stardisabled" />
+
+                        <Button
+                            android:id="@+id/chStar3"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/stardisabled" />
+
+                        <Button
+                            android:id="@+id/chStar4"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/stardisabled" />
+
+                        <Button
+                            android:id="@+id/chStar5"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/stardisabled" />
+                    </LinearLayout>
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -96,6 +142,15 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:theme="@style/Button" />
+
+                    <Button
+                        android:id="@+id/ch_popup_button_calificar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_10sdp"
+                        android:backgroundTint="@color/colorAccent"
+                        android:text="CALIFICAR"
                         android:theme="@style/Button" />
                 </LinearLayout>
             </LinearLayout>

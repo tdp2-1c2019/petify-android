@@ -14,6 +14,7 @@ import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import com.akexorcist.googledirection.model.Direction;
 import com.akexorcist.googledirection.model.Leg;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.app.petify.R;
+import com.app.petify.models.Client;
 import com.app.petify.models.Driver;
 import com.app.petify.models.Viaje;
 import com.app.petify.utils.LocalStorage;
@@ -66,6 +68,10 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private Button mPopupButtonAceptar;
     private Button mPopupButtonCancelar;
     private Button mPopupButtonAvanzar;
+    private Button[] starButtons = new Button[5];
+    private int puntajeStars = 3;
+    private RelativeLayout chStarsLayout;
+    private Button mCalificar;
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
@@ -77,6 +83,8 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private DatabaseReference mDatabase;
     private Polyline tripYendo;
     private Polyline tripViaje;
+    private Client pasajero;
+    private String pasajeroName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +106,15 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         mPopupButtonAceptar = findViewById(R.id.aceptar_viaje);
         mPopupButtonCancelar = findViewById(R.id.rechazar_viaje);
         mPopupButtonAvanzar = findViewById(R.id.proxima_etapa_viaje);
+        chStarsLayout = findViewById(R.id.chStarLayout);
+        mCalificar = findViewById(R.id.ch_popup_button_calificar);
+        mCalificar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDatabase.child("viajes").child(viaje.id).child("puntaje_pasajero").setValue(puntajeStars);
+                mDatabase.child("calificaciones").child(viaje.pasajero).child(viaje.id).child("puntaje").setValue(puntajeStars);
+            }
+        });
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -170,6 +187,43 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+
+        starButtons[0] = findViewById(R.id.chStar1);
+        starButtons[0].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                marcarEstrellas(1);
+            }
+        });
+        starButtons[1] = findViewById(R.id.chStar2);
+        starButtons[1].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                marcarEstrellas(2);
+            }
+        });
+        starButtons[2] = findViewById(R.id.chStar3);
+        starButtons[2].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                marcarEstrellas(3);
+            }
+        });
+        starButtons[3] = findViewById(R.id.chStar4);
+        starButtons[3].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                marcarEstrellas(4);
+            }
+        });
+        starButtons[4] = findViewById(R.id.chStar5);
+        starButtons[4].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                marcarEstrellas(5);
+            }
+        });
+        marcarEstrellas(3);
     }
 
     private void procesarViaje(Viaje newViaje) {
@@ -194,6 +248,18 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     viaje = dataSnapshot.getValue(Viaje.class);
+                    // Actualizamos el pasajero
+                    mDatabase.child("pasajeros").child(viaje.pasajero).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            pasajero = dataSnapshot.getValue(Client.class);
+                            pasajeroName = pasajero.name;
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
 
                     switch (viaje.estado) {
                         case Viaje.CHOFER_YENDO:
@@ -258,8 +324,16 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                         case Viaje.FINALIZADO:
                             limpiarMapa(1);
                             limpiarMapa(2);
-                            mDisponibleCard.setVisibility(View.VISIBLE);
-                            mPopup.setVisibility(View.INVISIBLE);
+                            mDisponibleCard.setVisibility(View.INVISIBLE);
+                            mPopup.setVisibility(View.VISIBLE);
+                            mPopupOrigen.setVisibility(View.GONE);
+                            mPopupDestino.setVisibility(View.GONE);
+                            mPopupText.setVisibility(View.VISIBLE);
+                            mPopupText.setText("Califica a " + pasajeroName);
+                            mPopupButtonAceptar.setVisibility(View.GONE);
+                            mPopupButtonAvanzar.setVisibility(View.GONE);
+                            mPopupButtonCancelar.setVisibility(View.GONE);
+                            chStarsLayout.setVisibility(View.VISIBLE);
                             break;
                         case Viaje.RECHAZADO:
                         case Viaje.CANCELADO:
@@ -385,5 +459,13 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                     public void onDirectionFailure(Throwable t) {
                     }
                 });
+    }
+
+    private void marcarEstrellas(int n) {
+        puntajeStars = n;
+        for (int i = 0; i < n; i++)
+            starButtons[i].setBackgroundDrawable(getResources().getDrawable(R.drawable.stari));
+        for (int i = n; i < 5; i++)
+            starButtons[i].setBackgroundDrawable(getResources().getDrawable(R.drawable.stardisabled));
     }
 }
