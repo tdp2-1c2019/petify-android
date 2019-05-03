@@ -3,7 +3,6 @@ package com.app.petify.activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -11,65 +10,59 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.app.petify.R;
-import com.app.petify.models.Client;
-import com.app.petify.models.Driver;
-import com.app.petify.models.User;
-import com.app.petify.models.responses.UserResponse;
-import com.app.petify.services.AuthenticationService;
+import com.app.petify.models.Usuario;
 import com.app.petify.utils.LocalStorage;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     public CallbackManager callbackManager;
+    private FirebaseFunctions mFunctions;
+
+    private Snackbar snackbar;
 
     private int INTERNET_PERMISSION = 1;
-    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        LoginButton loginButton;
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
 
         // Check for Internet permissions
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.INTERNET}, INTERNET_PERMISSION);
         }
 
-        loginButton = findViewById(R.id.login_button);
+        snackbar = Snackbar.make(findViewById(R.id.main_layout), "Iniciando sesion en Petify...", Snackbar.LENGTH_INDEFINITE);
+
+        LoginButton loginButton = findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
 
         // Creating CallbackManager
         callbackManager = CallbackManager.Factory.create();
 
         // Registering CallbackManager with the LoginButton
+        callbackManager = CallbackManager.Factory.create();
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -93,9 +86,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Inicializamos firebase
+        mFunctions = FirebaseFunctions.getInstance();
+
+        // Vemos si ya esta logueado para ingresarlo automaticamente
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-        if (isLoggedIn) retrieveSession(accessToken);
+        if (isLoggedIn) useLoginInformation(accessToken);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        snackbar.dismiss();
     }
 
     @Override
@@ -104,36 +107,44 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void retrieveSession(AccessToken accessToken) {
-        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-                try {
-                    String facebookId = object.has("id") ? object.getString("id") : "";
-                    new FacebookRetrieveSessionTask().execute(facebookId);
-                } catch (JSONException e) {
-                    Log.e("Error Retrieve Session", e.getMessage());
-                }
-            }
-        });
-
-        // Parameter setting with Bundle
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
-
     private void useLoginInformation(AccessToken accessToken) {
+        snackbar.show();
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
                 try {
                     String facebookId = object.has("id") ? object.getString("id") : "";
-                    String name = object.has("name") ? object.getString("name") : "";
 
-                    new FacebookLoginTask().execute(facebookId, name);
+                    Map<String, String> data = new HashMap<>();
+                    data.put("fbid", facebookId);
 
+                    mFunctions.getHttpsCallable("findUser").call(data).continueWith(new Continuation<HttpsCallableResult, Usuario>() {
+                        @Override
+                        public Usuario then(@NonNull Task<HttpsCallableResult> task) {
+                            try {
+                                Usuario usuario = new Usuario((HashMap<String,Object>) task.getResult().getData());
+                                LocalStorage.setUsuario(usuario);
+                                Intent navigationIntent;
+
+                                if (usuario.isCustomer) {
+                                    navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
+                                } else if (usuario.isDriver) {
+                                    if (usuario.cargoAuto && usuario.cargoRegistro && usuario.cargoSeguro) {
+                                        navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
+                                    } else {
+                                        navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
+                                    }
+                                } else {
+                                    navigationIntent = new Intent(MainActivity.this, UserTypeSelectionActivity.class);
+                                }
+                                startActivity(navigationIntent);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            snackbar.dismiss();
+                            return null;
+                        }
+                    });
                 } catch (JSONException e) {
                     Log.e("Error Facebook Login", e.getMessage());
                 }
@@ -146,113 +157,5 @@ public class MainActivity extends AppCompatActivity {
         request.setParameters(parameters);
         request.executeAsync();
     }
-
-    private class FacebookLoginTask extends AsyncTask<String, Void, UserResponse> {
-        private AuthenticationService authenticationService = new AuthenticationService();
-        private Snackbar snackbar;
-
-        protected void onPreExecute() {
-            this.snackbar.show();
-            findViewById(R.id.login_button).setEnabled(false);
-        }
-
-        FacebookLoginTask() {
-            this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Iniciando sesion en Petify...", Snackbar.LENGTH_INDEFINITE);
-        }
-
-        protected UserResponse doInBackground(String... params) {
-            LocalStorage.setFacebookId(params[0]);
-            return authenticationService.findUser(params[0]);
-        }
-
-        protected void onPostExecute(UserResponse response) {
-            this.snackbar.dismiss();
-            findViewById(R.id.login_button).setEnabled(true);
-
-            UserResponse.ServiceStatusCode statusCode = response.getStatusCode();
-            if (statusCode == UserResponse.ServiceStatusCode.SUCCESS) {
-                User userResponse = response.getServiceResponse();
-                if (userResponse instanceof Client) {
-                    Intent navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
-                    startActivity(navigationIntent);
-                } else if (userResponse instanceof Driver) {
-                    mDatabase.child("drivers").child(((Driver) userResponse).facebookId).child("habilitado").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if ((Boolean) dataSnapshot.getValue()) {
-                                Intent navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
-                                startActivity(navigationIntent);
-                            } else {
-                                Intent navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
-                                startActivity(navigationIntent);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-            } else {
-                Intent navigationIntent = new Intent(MainActivity.this, UserTypeSelectionActivity.class);
-                startActivity(navigationIntent);
-            }
-        }
-    }
-
-    private class FacebookRetrieveSessionTask extends AsyncTask<String, Void, UserResponse> {
-        private AuthenticationService authenticationService = new AuthenticationService();
-        private Snackbar snackbar;
-
-        protected void onPreExecute() {
-            this.snackbar.show();
-            findViewById(R.id.login_button).setEnabled(false);
-        }
-
-        FacebookRetrieveSessionTask() {
-            this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Obteniendo sesion de Petify...", Snackbar.LENGTH_INDEFINITE);
-        }
-
-        protected UserResponse doInBackground(String... params) {
-            return authenticationService.findUser(params[0]);
-        }
-
-        protected void onPostExecute(UserResponse response) {
-            this.snackbar.dismiss();
-            findViewById(R.id.login_button).setEnabled(true);
-
-            UserResponse.ServiceStatusCode statusCode = response.getStatusCode();
-            if (statusCode == UserResponse.ServiceStatusCode.SUCCESS) {
-                User userResponse = response.getServiceResponse();
-                if (userResponse instanceof Client) {
-                    Intent navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
-                    startActivity(navigationIntent);
-                } else if (userResponse instanceof Driver) {
-                    mDatabase.child("drivers").child(((Driver) userResponse).facebookId).child("habilitado").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if ((Boolean) dataSnapshot.getValue()) {
-                                Intent navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
-                                startActivity(navigationIntent);
-                            } else {
-                                Intent navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
-                                startActivity(navigationIntent);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-            } else {
-                this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Ocurrio un error obteniendo su sesion de Facebook", Snackbar.LENGTH_SHORT);
-                LoginManager.getInstance().logOut();
-            }
-        }
-    }
-
 }
 
