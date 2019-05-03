@@ -133,9 +133,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onStart() {
         super.onStart();
         mOriginAutocompleteFragment.setText("");
+        origin = null;
         mDestinationAutocompleteFragment.setText("");
+        destination = null;
         if (mMap != null) {
             mMap.clear();
+            if (trip != null) trip.remove();
             try {
                 locateAndZoomUser();
             } catch (Exception e) {
