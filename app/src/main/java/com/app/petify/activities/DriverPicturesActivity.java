@@ -18,6 +18,8 @@ import com.app.petify.utils.DownloadImageTask;
 import com.facebook.AccessToken;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -26,8 +28,10 @@ import com.google.firebase.storage.UploadTask;
 import java.io.IOException;
 
 public class DriverPicturesActivity extends AppCompatActivity {
-    private FirebaseStorage storage;
-    private StorageReference storageReference;
+    private FirebaseStorage mStorage;
+    private StorageReference driverStorageReference;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference driverDatabaseReference;
     private String driverFbId;
     private String baseRef;
     private Uri localFilePath;
@@ -78,10 +82,12 @@ public class DriverPicturesActivity extends AppCompatActivity {
         driverFbId = accessToken.getUserId();
         baseRef = "drivers/" + driverFbId;
 
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference(baseRef);
+        mDatabase = FirebaseDatabase.getInstance();
+        driverDatabaseReference = mDatabase.getReference().child(baseRef);
+        mStorage = FirebaseStorage.getInstance();
+        driverStorageReference = mStorage.getReference(baseRef);
         // Si alguna imagen ya esta en su perfil, la traemos
-        storageReference.child("registro").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        driverStorageReference.child("registro").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 new DownloadImageTask(mRegistroImage).execute(uri.toString());
@@ -94,7 +100,7 @@ public class DriverPicturesActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
-        storageReference.child("seguro").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        driverStorageReference.child("seguro").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 new DownloadImageTask(mSeguroImage).execute(uri.toString());
@@ -107,7 +113,7 @@ public class DriverPicturesActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
-        storageReference.child("auto").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        driverStorageReference.child("auto").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 new DownloadImageTask(mAutoImage).execute(uri.toString());
@@ -156,6 +162,10 @@ public class DriverPicturesActivity extends AppCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), localFilePath);
                 switch (requestCode) {
+                    case AUTO_REQUEST:
+                        mAutoImage.setImageBitmap(bitmap);
+                        uploadImage(AUTO_REQUEST);
+                        break;
                     case REGISTRO_REQUEST:
                         mRegistroImage.setImageBitmap(bitmap);
                         uploadImage(REGISTRO_REQUEST);
@@ -163,10 +173,6 @@ public class DriverPicturesActivity extends AppCompatActivity {
                     case SEGURO_REQUEST:
                         mSeguroImage.setImageBitmap(bitmap);
                         uploadImage(SEGURO_REQUEST);
-                        break;
-                    case AUTO_REQUEST:
-                        mAutoImage.setImageBitmap(bitmap);
-                        uploadImage(AUTO_REQUEST);
                         break;
                 }
             } catch (IOException e) {
@@ -181,16 +187,16 @@ public class DriverPicturesActivity extends AppCompatActivity {
             progressDialog.setTitle("Subiendo...");
             progressDialog.show();
 
-            StorageReference ref = storageReference;
+            StorageReference ref = driverStorageReference;
             switch (request_type) {
+                case AUTO_REQUEST:
+                    ref = ref.child("auto");
+                    break;
                 case REGISTRO_REQUEST:
                     ref = ref.child("registro");
                     break;
                 case SEGURO_REQUEST:
                     ref = ref.child("seguro");
-                    break;
-                case AUTO_REQUEST:
-                    ref = ref.child("auto");
                     break;
             }
             ref.putFile(localFilePath)
@@ -201,14 +207,17 @@ public class DriverPicturesActivity extends AppCompatActivity {
                             progressDialog.dismiss();
                             snackbar = Snackbar.make(findViewById(R.id.driver_profile_layout), "Imagen cargada", Snackbar.LENGTH_SHORT);
                             switch (request_type) {
+                                case AUTO_REQUEST:
+                                    autoCargado = true;
+                                    driverDatabaseReference.child("cargoAuto").setValue(true);
+                                    break;
                                 case REGISTRO_REQUEST:
                                     registroCargado = true;
+                                    driverDatabaseReference.child("cargoRegistro").setValue(true);
                                     break;
                                 case SEGURO_REQUEST:
                                     seguroCargado = true;
-                                    break;
-                                case AUTO_REQUEST:
-                                    autoCargado = true;
+                                    driverDatabaseReference.child("cargoSeguro").setValue(true);
                                     break;
                             }
                             permitirAvanzar();
