@@ -85,6 +85,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private Polyline tripViaje;
     private Client pasajero;
     private String pasajeroName;
+    private String fbid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +124,8 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             ActivityCompat.requestPermissions(DriverHomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION);
         }
 
+        fbid = Profile.getCurrentProfile().getId();
+
         // Obtenemos la location del chofer y la actualizamos en Firebase
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         locationRequest = LocationRequest.create();
@@ -139,8 +142,14 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                     if (location != null) {
                         wayLatitude = location.getLatitude();
                         wayLongitude = location.getLongitude();
-                        mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("lat").setValue(wayLatitude);
-                        mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("lng").setValue(wayLongitude);
+                        try {
+                            mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("lat").setValue(wayLatitude);
+                            mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("lng").setValue(wayLongitude);
+                        } catch (Exception e) {
+                            // Sacamos el callback porque se cerro la sesion y me marco como no disponible
+                            fusedLocationClient.removeLocationUpdates(locationCallback);
+                            mDatabase.child("drivers").child(fbid).child("disponible").setValue(false);
+                        }
                         if (viaje != null) {
                             if (viaje.estado == Viaje.CHOFER_ASIGNADO ||
                                     viaje.estado == Viaje.CHOFER_YENDO) {
@@ -156,11 +165,11 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
 
-        mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(mDisponible.isChecked());
+        mDatabase.child("drivers").child(fbid).child("disponible").setValue(mDisponible.isChecked());
         mDisponible.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mDatabase.child("drivers").child(Profile.getCurrentProfile().getId()).child("disponible").setValue(mDisponible.isChecked());
+                mDatabase.child("drivers").child(fbid).child("disponible").setValue(mDisponible.isChecked());
             }
         });
 
@@ -227,7 +236,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void procesarViaje(Viaje newViaje) {
-        if (newViaje.chofer.equals(Profile.getCurrentProfile().getId())) {
+        if (newViaje.chofer.equals(fbid)) {
             viaje = newViaje;
 
             if (viaje.estado == Viaje.CHOFER_ASIGNADO ||
