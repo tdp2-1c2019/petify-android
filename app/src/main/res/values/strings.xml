@@ -22,6 +22,7 @@
     <string name="cargar_viaje">Cargar viaje</string>
 
     <string-array name="cantM">
+        <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>

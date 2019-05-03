@@ -136,7 +136,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mDestinationAutocompleteFragment.setText("");
         if (mMap != null) {
             mMap.clear();
-            try{
+            try {
                 locateAndZoomUser();
             } catch (Exception e) {
                 e.printStackTrace();
