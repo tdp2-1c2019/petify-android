@@ -31,4 +31,5 @@
         <item>Efectivo</item>
         <item>Mercadopago</item>
     </string-array>
+    <string name="title_activity_cargar_perfil">CargarPerfilActivity</string>
 </resources>

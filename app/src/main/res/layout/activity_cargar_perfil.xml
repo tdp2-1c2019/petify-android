@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/cargarperfilTitle"
+        style="@style/Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Carga de datos"
+        android:textAlignment="center"></TextView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cargarperfilTitle"
+        android:layout_marginTop="30dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Textbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/grey"
+                android:theme="@style/Textbox"
+                app:boxStrokeColor="@color/grey">
+
+                <EditText
+                    android:id="@+id/cargarperfilNombre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:hint="Nombre"
+                    android:importantForAutofill="no"
+                    android:inputType="text" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Textbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/grey"
+                android:theme="@style/Textbox"
+                app:boxStrokeColor="@color/grey">
+
+                <EditText
+                    android:id="@+id/cargarperfilApellido"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:hint="Apellido"
+                    android:importantForAutofill="no"
+                    android:inputType="text" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Textbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/grey"
+                android:theme="@style/Textbox"
+                app:boxStrokeColor="@color/grey">
+
+                <EditText
+                    android:id="@+id/cargarperfilCorreo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:hint="Correo"
+                    android:importantForAutofill="no"
+                    android:inputType="text" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Textbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/grey"
+                android:theme="@style/Textbox"
+                app:boxStrokeColor="@color/grey">
+
+                <EditText
+                    android:id="@+id/cargarperfilTelefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:hint="Telefono"
+                    android:importantForAutofill="no"
+                    android:inputType="text" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Textbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/grey"
+                android:theme="@style/Textbox"
+                app:boxStrokeColor="@color/grey">
+
+                <EditText
+                    android:id="@+id/cargarperfilTelefonoEme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:hint="Telefono Emergencia"
+                    android:importantForAutofill="no"
+                    android:inputType="text" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Textbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/grey"
+                android:theme="@style/Textbox"
+                app:boxStrokeColor="@color/grey">
+
+                <EditText
+                    android:id="@+id/cargarperfilDireccion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:hint="Direccion"
+                    android:importantForAutofill="no"
+                    android:inputType="text" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_10sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/registroText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:gravity="center"
+                            android:text="Registro:"
+                            android:theme="@style/Subtitle" />
+
+                        <Button
+                            android:id="@+id/subirFotoRegistro"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:text="seleccionar" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/registroImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_100sdp"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/card" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/cargarperfilFinalizar"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_below="@id/precio_estimado_text"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/_5sdp"
+        android:text="FINALIZAR"
+        android:textAlignment="center"
+        android:theme="@style/Button" />
+</RelativeLayout>

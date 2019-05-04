@@ -60,4 +60,8 @@
     </style>
 
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/grey</color>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

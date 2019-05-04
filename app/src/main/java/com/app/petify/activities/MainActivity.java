@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent navigationIntent;
 
                                 if (usuario.isCustomer) {
-                                    navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
+                                    navigationIntent = new Intent(MainActivity.this, CargarPerfilActivity.class);
                                 } else if (usuario.isDriver) {
                                     if (usuario.cargoAuto && usuario.cargoRegistro && usuario.cargoSeguro) {
                                         navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
