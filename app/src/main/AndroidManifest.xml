@@ -17,12 +17,14 @@
         <activity
             android:name=".activities.CargarPerfilActivity"
             android:label="@string/title_activity_cargar_perfil"
+            android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".activities.DriverPicturesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.ViajeCursoActivity"
+            android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.CargarViajeActivity"
@@ -52,6 +54,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.UserTypeSelectionActivity"
+            android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data

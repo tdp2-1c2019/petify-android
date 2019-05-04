@@ -113,7 +113,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
                 try {
-                    String facebookId = object.has("id") ? object.getString("id") : "";
+                    final String facebookId = object.has("id") ? object.getString("id") : "";
+                    final String email = object.has("email") ? object.getString("email") : "";
+                    final String name = object.has("name") ? object.getString("name") : "";
 
                     Map<String, String> data = new HashMap<>();
                     data.put("fbid", facebookId);
@@ -122,20 +124,24 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public Usuario then(@NonNull Task<HttpsCallableResult> task) {
                             try {
-                                Usuario usuario = new Usuario((HashMap<String,Object>) task.getResult().getData());
+                                HashMap<String,Object> response = (HashMap<String,Object>) task.getResult().getData();
+                                if (!response.containsKey("email")) response.put("email", email);
+                                if (!response.containsKey("name")) response.put("name", name);
+
+                                Usuario usuario = new Usuario(response);
                                 LocalStorage.setUsuario(usuario);
                                 Intent navigationIntent;
 
-                                if (usuario.isCustomer) {
-                                    navigationIntent = new Intent(MainActivity.this, CargarPerfilActivity.class);
-                                } else if (usuario.isDriver) {
-                                    if (usuario.cargoAuto && usuario.cargoRegistro && usuario.cargoSeguro) {
-                                        navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
-                                    } else {
-                                        navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
-                                    }
-                                } else {
+                                if (!usuario.estaRegistrado()) {
                                     navigationIntent = new Intent(MainActivity.this, UserTypeSelectionActivity.class);
+                                } else if (!usuario.tienePerfilCompleto()) {
+                                    navigationIntent = new Intent(MainActivity.this, CargarPerfilActivity.class);
+                                } else if (usuario.isCustomer) {
+                                    navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
+                                } else if (!usuario.cargoImagenes()) { // Si esta registrado y no es customer, es driver
+                                    navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
+                                } else {
+                                    navigationIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
                                 }
                                 startActivity(navigationIntent);
                             } catch (Exception e) {

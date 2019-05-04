@@ -14,7 +14,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.app.petify.R;
+import com.app.petify.models.Usuario;
 import com.app.petify.utils.DownloadImageTask;
+import com.app.petify.utils.LocalStorage;
 import com.facebook.AccessToken;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,6 +30,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.IOException;
 
 public class DriverPicturesActivity extends AppCompatActivity {
+    private Usuario usuario;
     private FirebaseStorage mStorage;
     private StorageReference driverStorageReference;
     private FirebaseDatabase mDatabase;
@@ -46,8 +49,7 @@ public class DriverPicturesActivity extends AppCompatActivity {
     private Button mAutoSubir;
     private boolean autoCargado;
     private Button mTerminarCarga;
-
-    Snackbar snackbar;
+    Snackbar mSnackbar;
 
     private final int REGISTRO_REQUEST = 71;
     private final int SEGURO_REQUEST = 72;
@@ -73,25 +75,39 @@ public class DriverPicturesActivity extends AppCompatActivity {
         mTerminarCarga.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), DriverHomeActivity.class);
+                Intent i = new Intent(DriverPicturesActivity.this, DriverHomeActivity.class);
                 startActivity(i);
             }
         });
 
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        driverFbId = accessToken.getUserId();
-        baseRef = "drivers/" + driverFbId;
+        usuario = LocalStorage.getUsuario();
+        baseRef = "drivers/" + usuario.fbid;
 
         mDatabase = FirebaseDatabase.getInstance();
         driverDatabaseReference = mDatabase.getReference().child(baseRef);
         mStorage = FirebaseStorage.getInstance();
         driverStorageReference = mStorage.getReference(baseRef);
         // Si alguna imagen ya esta en su perfil, la traemos
+        driverStorageReference.child("auto").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                new DownloadImageTask(mAutoImage).execute(uri.toString());
+                autoCargado = true;
+                driverDatabaseReference.child("cargoAuto").setValue(true);
+                permitirAvanzar();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
+            }
+        });
         driverStorageReference.child("registro").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 new DownloadImageTask(mRegistroImage).execute(uri.toString());
                 registroCargado = true;
+                driverDatabaseReference.child("cargoRegistro").setValue(true);
                 permitirAvanzar();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -105,19 +121,7 @@ public class DriverPicturesActivity extends AppCompatActivity {
             public void onSuccess(Uri uri) {
                 new DownloadImageTask(mSeguroImage).execute(uri.toString());
                 seguroCargado = true;
-                permitirAvanzar();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                e.printStackTrace();
-            }
-        });
-        driverStorageReference.child("auto").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                new DownloadImageTask(mAutoImage).execute(uri.toString());
-                autoCargado = true;
+                driverDatabaseReference.child("cargoSeguro").setValue(true);
                 permitirAvanzar();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -205,7 +209,7 @@ public class DriverPicturesActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
-                            snackbar = Snackbar.make(findViewById(R.id.driver_profile_layout), "Imagen cargada", Snackbar.LENGTH_SHORT);
+                            mSnackbar = Snackbar.make(findViewById(R.id.driver_profile_layout), "Imagen cargada", Snackbar.LENGTH_SHORT);
                             switch (request_type) {
                                 case AUTO_REQUEST:
                                     autoCargado = true;
@@ -227,7 +231,7 @@ public class DriverPicturesActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            snackbar = Snackbar.make(findViewById(R.id.driver_profile_layout), "Error: " + e.getMessage(), Snackbar.LENGTH_SHORT);
+                            mSnackbar = Snackbar.make(findViewById(R.id.driver_profile_layout), "Error: " + e.getMessage(), Snackbar.LENGTH_SHORT);
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
