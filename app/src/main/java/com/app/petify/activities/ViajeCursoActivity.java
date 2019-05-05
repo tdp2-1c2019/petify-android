@@ -12,8 +12,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.app.petify.R;
@@ -27,11 +27,18 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCallback {
     private int LOCATION_PERMISSION = 2;
@@ -51,6 +58,10 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
     private Button[] starButtons = new Button[5];
     private int puntajeStars = 3;
     private RelativeLayout pStarsLayout;
+    private FirebaseFunctions mFunctions;
+    private LinearLayout mLayContinuarBuscando;
+    private Button mSeguirBuscando;
+    private Button mCancelarBusqueda;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +71,8 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.viajeCursoPasajeroMap);
         mapFragment.getMapAsync(this);
+        mFunctions = FirebaseFunctions.getInstance();
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         mPopup = findViewById(R.id.popup);
@@ -67,18 +80,21 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
         mPopupButton = findViewById(R.id.popup_button);
         mPopupButtonCalificar = findViewById(R.id.popup_button_calificar);
         pStarsLayout = findViewById(R.id.pStarLayout);
-
+        mLayContinuarBuscando = findViewById(R.id.layoutContinuarBuscando);
+        mSeguirBuscando = findViewById(R.id.buttonAceptarSeguirBuscando);
+        mCancelarBusqueda = findViewById(R.id.buttonCancelarSeguirBuscando);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         Intent intent = getIntent();
         final String viajeId = intent.getStringExtra("VIAJE_ID");
-        final String choferId = intent.getStringExtra("CHOFER_ID");
 
         mPopupButtonCalificar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mDatabase.child("viajes").child(viajeId).child("puntaje_chofer").setValue(puntajeStars);
-                mDatabase.child("calificaciones").child(choferId).child(viajeId).child("puntaje").setValue(puntajeStars);
+//                mDatabase.child("calificaciones").child(choferId).child(viajeId).child("puntaje").setValue(puntajeStars);
+                Intent intent = new Intent(getBaseContext(), MapsActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -96,29 +112,60 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         mPopupButton.setBackgroundColor(Color.RED);
                         pStarsLayout.setVisibility(View.GONE);
                         mPopupButtonCalificar.setVisibility(View.GONE);
+                        mLayContinuarBuscando.setVisibility(View.GONE);
                         mPopupButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.CANCELADO);
+                                Map<String, String> data = new HashMap<>();
+                                data.put("viajeid", viaje.id);
+                                mFunctions.getHttpsCallable("cancelarViaje").call(data).continueWith(new Continuation<HttpsCallableResult, Object>() {
+                                    @Override
+                                    public Object then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                                        Intent intent = new Intent(getBaseContext(), MapsActivity.class);
+                                        startActivity(intent);
+                                        return null;
+                                    }
+                                });
                             }
                         });
                         break;
                     case Viaje.CHOFER_ASIGNADO:
-                        mPopupText.setText("Asignamos al chofer " + choferName + " para tu viaje");
+                        mPopupText.setText("Estamos buscando chofer para tu viaje");
                         mPopupButton.setVisibility(View.VISIBLE);
                         mPopupButton.setText("Cancelar");
                         mPopupButton.setBackgroundColor(Color.RED);
                         pStarsLayout.setVisibility(View.GONE);
                         mPopupButtonCalificar.setVisibility(View.GONE);
+                        mLayContinuarBuscando.setVisibility(View.GONE);
                         mPopupButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.CANCELADO);
+                                Map<String, String> data = new HashMap<>();
+                                data.put("viajeid", viaje.id);
+                                mFunctions.getHttpsCallable("cancelarViaje").call(data).continueWith(new Continuation<HttpsCallableResult, Object>() {
+                                    @Override
+                                    public Object then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                                        Intent intent = new Intent(getBaseContext(), MapsActivity.class);
+                                        startActivity(intent);
+                                        return null;
+                                    }
+                                });
                             }
                         });
                         break;
                     case Viaje.CHOFER_YENDO:
-                        mPopupText.setText(choferName + " llegara en " + viaje.eta + " hacia el origen");
+                        mDatabase.child("drivers").child(viaje.chofer).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                choferName = dataSnapshot.getValue(String.class);
+                                mPopupText.setText(choferName + " llegara en " + viaje.eta + " hacia el origen");
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                         pStarsLayout.setVisibility(View.GONE);
                         mPopupButtonCalificar.setVisibility(View.GONE);
                         mPopupButton.setVisibility(View.VISIBLE);
@@ -144,54 +191,20 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         mPopupButton.setVisibility(View.GONE);
                         break;
                     case Viaje.RECHAZADO:
-                        mPopupText.setText("Tu viaje fue rechazado");
-                        mPopupButtonCalificar.setVisibility(View.GONE);
-                        pStarsLayout.setVisibility(View.GONE);
-                        mPopupButton.setVisibility(View.GONE);
+                        Intent intent = new Intent(getBaseContext(), MapsActivity.class);
+                        startActivity(intent);
                         break;
-                    case Viaje.CANCELADO:
-                        mPopupText.setText("Cancelaste tu viaje");
-                        mPopupButtonCalificar.setVisibility(View.GONE);
-                        pStarsLayout.setVisibility(View.GONE);
+                    case Viaje.CANCELADO_GRUPO:
+                        mPopupText.setText("No se encontraron choferes");
                         mPopupButton.setVisibility(View.GONE);
-                        break;
+                        mLayContinuarBuscando.setVisibility(View.VISIBLE);
                     default:
                         break;
                 }
-
-
-                // Actualizamos el driver
-                mDatabase.child("drivers").child(viaje.chofer).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        chofer = dataSnapshot.getValue(Driver.class);
-                        choferName = chofer.name;
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
-                });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-
-        mDatabase.child("drivers").child(choferId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (viaje != null && viaje.estado > 0) {
-                    mMap.clear();
-                    LatLng ll = new LatLng((double) dataSnapshot.child("lat").getValue(), (double) dataSnapshot.child("lng").getValue());
-                    mMap.addMarker(new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
 
@@ -231,6 +244,27 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
             }
         });
         marcarEstrellas(3);
+
+        mSeguirBuscando.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, String> data = new HashMap<>();
+                data.put("viajeid", viaje.id);
+                mFunctions.getHttpsCallable("seguirBuscando").call(data).continueWith(new Continuation<HttpsCallableResult, Object>() {
+                    @Override
+                    public Object then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        return null;
+                    }
+                });
+            }
+        });
+        mCancelarBusqueda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), MapsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

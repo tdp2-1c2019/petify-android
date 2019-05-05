@@ -9,8 +9,9 @@ public class Viaje implements Serializable {
     public static final int CHOFER_EN_PUERTA = 3;
     public static final int EN_CURSO = 4;
     public static final int FINALIZADO = 5;
-    public static final int RECHAZADO = 10;
+    public static final int RECHAZADO = -999;
     public static final int CANCELADO = 20;
+    public static final int CANCELADO_GRUPO = -90;
 
     public String id;
 

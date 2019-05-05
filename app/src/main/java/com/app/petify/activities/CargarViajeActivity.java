@@ -31,7 +31,6 @@ import java.util.UUID;
 
 public class CargarViajeActivity extends AppCompatActivity {
 
-    private Spinner mChofer;
     private Spinner mCantidadMascotasP;
     private Spinner mCantidadMascotasM;
     private Spinner mCantidadMascotasG;
@@ -61,7 +60,6 @@ public class CargarViajeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cargar_viaje);
-        mChofer = findViewById(R.id.chofer);
         mSolicitarViaje = findViewById(R.id.solicitar_viaje);
         mSolicitarViaje.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,8 +70,7 @@ public class CargarViajeActivity extends AppCompatActivity {
                     viaje = new Viaje();
                     viaje.id = UUID.randomUUID().toString();
                     viaje.pasajero = Profile.getCurrentProfile().getId();
-                    viaje.chofer = mapUsers.get(mChofer.getSelectedItem().toString());
-                    viaje.estado = Viaje.CHOFER_ASIGNADO; // TODO en chofer se asigna despues
+                    viaje.estado = Viaje.CARGADO; // TODO en chofer se asigna despues
                     viaje.origin_address = origin_address;
                     viaje.origin_latitude = origin_latitude;
                     viaje.origin_longitude = origin_longitude;
@@ -182,23 +179,23 @@ public class CargarViajeActivity extends AppCompatActivity {
         mTarifa = findViewById(R.id.precio_estimado_text);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("drivers").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    if ((Boolean) d.child("disponible").getValue()) {
-                        mapUsers.put((String) d.child("name").getValue(), d.getKey());
-                    }
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getBaseContext(), R.layout.spinner_layout, mapUsers.keySet().toArray(new String[mapUsers.size()]));
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                mChofer.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
+//        mDatabase.child("drivers").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot d : dataSnapshot.getChildren()) {
+//                    if ((Boolean) d.child("disponible").getValue()) {
+//                        mapUsers.put((String) d.child("name").getValue(), d.getKey());
+//                    }
+//                }
+//                ArrayAdapter<String> adapter = new ArrayAdapter<>(getBaseContext(), R.layout.spinner_layout, mapUsers.keySet().toArray(new String[mapUsers.size()]));
+//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                mChofer.setAdapter(adapter);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//            }
+//        });
     }
 
     public void updateTarifa() {
