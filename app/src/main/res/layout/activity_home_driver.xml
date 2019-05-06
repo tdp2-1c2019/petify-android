@@ -73,18 +73,30 @@
                     android:id="@+id/popup_viajaA"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/dark"
+                    android:theme="@style/Texto"
                     android:visibility="invisible" />
 
                 <TextView
                     android:id="@+id/popup_cantM"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/dark"
+                    android:theme="@style/Texto"
                     android:visibility="invisible" />
 
                 <TextView
                     android:id="@+id/popup_observaciones"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/dark"
+                    android:theme="@style/Texto"
                     android:visibility="invisible" />
 
                 <RelativeLayout
