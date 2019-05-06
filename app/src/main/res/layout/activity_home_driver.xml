@@ -69,6 +69,24 @@
                     android:textColor="@color/dark"
                     android:theme="@style/Texto" />
 
+                <TextView
+                    android:id="@+id/popup_viajaA"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/popup_cantM"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/popup_observaciones"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible" />
+
                 <RelativeLayout
                     android:id="@+id/chStarLayout"
                     android:layout_width="match_parent"
@@ -152,7 +170,7 @@
                         android:backgroundTint="@color/colorAccent"
                         android:text="CALIFICAR"
                         android:theme="@style/Button"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>
 

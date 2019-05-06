@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -25,9 +24,7 @@ import com.akexorcist.googledirection.model.Leg;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.app.petify.R;
 import com.app.petify.models.Client;
-import com.app.petify.models.Driver;
 import com.app.petify.models.Viaje;
-import com.app.petify.utils.LocalStorage;
 import com.facebook.Profile;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -38,17 +35,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -83,6 +77,9 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private int puntajeStars = 3;
     private RelativeLayout chStarsLayout;
     private Button mCalificar;
+    private TextView mPopupViajaA;
+    private TextView mPopupCantM;
+    private TextView mPopupObs;
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
@@ -119,6 +116,9 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         mPopupButtonAceptar = findViewById(R.id.aceptar_viaje);
         mPopupButtonCancelar = findViewById(R.id.rechazar_viaje);
         mPopupButtonAvanzar = findViewById(R.id.proxima_etapa_viaje);
+        mPopupViajaA = findViewById(R.id.popup_viajaA);
+        mPopupCantM = findViewById(R.id.popup_cantM);
+        mPopupObs = findViewById(R.id.popup_observaciones);
         chStarsLayout = findViewById(R.id.chStarLayout);
         mCalificar = findViewById(R.id.ch_popup_button_calificar);
         mCalificar.setOnClickListener(new View.OnClickListener() {
@@ -303,11 +303,23 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             mPopupOrigen.setText("Origen: " + viaje.origin_address);
             mPopupOrigen.setBackgroundColor(Color.TRANSPARENT);
             mPopupDestino.setText("Destino: " + viaje.destination_address);
+            mPopupCantM.setText("Mascotas: " + viaje.cantidadMascotas);
+            if (viaje.viajaAcompanante) mPopupViajaA.setText("Viaja acompañante");
+            else mPopupViajaA.setText("No viaja acompañante");
+            mPopupViajaA.setVisibility(View.VISIBLE);
+            mPopupCantM.setVisibility(View.VISIBLE);
+            if (!viaje.observaciones.trim().isEmpty()) {
+                mPopupObs.setText("Observaciones: " + viaje.observaciones);
+                mPopupObs.setVisibility(View.VISIBLE);
+            } else mPopupObs.setVisibility(View.GONE);
             mPopupDestino.setBackgroundColor(Color.TRANSPARENT);
             mPopupButtonAceptar.setVisibility(View.VISIBLE);
             mPopupButtonAceptar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mPopupCantM.setVisibility(View.GONE);
+                    mPopupObs.setVisibility(View.GONE);
+                    mPopupViajaA.setVisibility(View.GONE);
                     mPopupText.setVisibility(View.GONE);
                     mPopupOrigen.setText("Origen: " + viaje.origin_address);
                     mPopupOrigen.setBackgroundColor(Color.CYAN);

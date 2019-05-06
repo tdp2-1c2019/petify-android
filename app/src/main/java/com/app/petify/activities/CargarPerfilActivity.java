@@ -44,7 +44,6 @@ public class CargarPerfilActivity extends AppCompatActivity implements OnMapRead
     private EditText mNombre;
     private EditText mEmail;
     private EditText mTelefono;
-    private EditText mTelefonoEmergencia;
     private AutocompleteSupportFragment mDireccion;
     private Place direccion;
     private Button mCargarPerfil;
@@ -69,7 +68,6 @@ public class CargarPerfilActivity extends AppCompatActivity implements OnMapRead
         mNombre = findViewById(R.id.perfil_nombre);
         mEmail = findViewById(R.id.perfil_email);
         mTelefono = findViewById(R.id.perfil_telefono);
-        mTelefonoEmergencia = findViewById(R.id.perfil_telefono_emergencia);
         mDireccion = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.perfil_direccion);
         mDireccion.setCountry("AR");
@@ -97,7 +95,6 @@ public class CargarPerfilActivity extends AppCompatActivity implements OnMapRead
                 usuario.name = mNombre.getText().toString();
                 usuario.email = mEmail.getText().toString();
                 usuario.telefono = mTelefono.getText().toString();
-                usuario.telefonoEmergencia = mTelefonoEmergencia.getText().toString();
                 usuario.direccion = direccion.getName();
 
                 // Cargamos el usuario en firebase
@@ -126,7 +123,6 @@ public class CargarPerfilActivity extends AppCompatActivity implements OnMapRead
         mNombre.setText(usuario.name);
         mEmail.setText(usuario.email);
         mTelefono.setText(usuario.telefono);
-        mTelefonoEmergencia.setText(usuario.telefonoEmergencia);
         mDireccion.setText(usuario.direccion);
     }
 
