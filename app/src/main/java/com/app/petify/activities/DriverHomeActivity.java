@@ -1,15 +1,20 @@
 package com.app.petify.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -60,7 +65,7 @@ import static com.app.petify.models.Viaje.CHOFER_YENDO;
 import static com.app.petify.models.Viaje.EN_CURSO;
 import static com.app.petify.models.Viaje.FINALIZADO;
 
-public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
     private int LOCATION_PERMISSION = 2;
 
     private GoogleMap mMap;
@@ -97,6 +102,10 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private String eta1;
     private String eta2;
 
+    private NavigationView navView;
+    private TextView drawerTitle;
+    private MenuItem itemInicio;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +115,10 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mFunctions = FirebaseFunctions.getInstance();
-
+        navView = findViewById(R.id.driver_nav_view);
+        navView.setNavigationItemSelectedListener(this);
+        drawerTitle = navView.getHeaderView(0).findViewById(R.id.nav_header_title);
+        itemInicio = navView.getMenu().getItem(0);
         mDisponibleCard = findViewById(R.id.disponible_card);
         mDisponible = findViewById(R.id.disponible);
         mPopup = findViewById(R.id.popup);
@@ -121,6 +133,10 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         mPopupObs = findViewById(R.id.popup_observaciones);
         chStarsLayout = findViewById(R.id.chStarLayout);
         mCalificar = findViewById(R.id.ch_popup_button_calificar);
+        drawerTitle.setText("Hola " + Profile.getCurrentProfile().getFirstName() + "!");
+        SpannableString s = new SpannableString(itemInicio.getTitle());
+        s.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getBaseContext(), R.color.com_facebook_blue)), 0, s.length(), 0);
+        itemInicio.setTitle(s);
         mCalificar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -527,5 +543,15 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             starButtons[i].setBackgroundDrawable(getResources().getDrawable(R.drawable.stari));
         for (int i = n; i < 5; i++)
             starButtons[i].setBackgroundDrawable(getResources().getDrawable(R.drawable.stardisabled));
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        Intent i = null;
+        if (id == R.id.nav_item_perfil)
+            i = new Intent(this, PerfilActivity.class);
+        startActivity(i);
+        return false;
     }
 }
