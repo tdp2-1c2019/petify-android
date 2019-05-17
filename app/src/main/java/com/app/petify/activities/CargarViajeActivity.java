@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -77,10 +78,12 @@ public class CargarViajeActivity extends AppCompatActivity {
                     viaje.destination_address = destination_address;
                     viaje.destination_latitude = destination_latitude;
                     viaje.destination_longitude = destination_longitude;
+                    viaje.fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
                     viaje.cantidadMascotas = String.valueOf(sumMascotas);
                     viaje.viajaAcompanante = mViajaAcompanante.isChecked();
                     viaje.formaPago = mFormaPago.getSelectedItem().toString();
                     viaje.observaciones = mObservaciones.getText().toString();
+                    viaje.precio = mTarifa.getText().toString();
                     mDatabase.child("viajes").child(viaje.id).setValue(viaje);
                     Intent i = new Intent(getBaseContext(), ViajeCursoActivity.class);
                     i.putExtra("VIAJE_ID", viaje.id);
