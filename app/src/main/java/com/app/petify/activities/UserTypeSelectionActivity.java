@@ -52,6 +52,7 @@ public class UserTypeSelectionActivity extends AppCompatActivity {
 
             // Creamos el user en la db
             DatabaseReference customerReference = mDatabase.child("customers").child(usuario.fbid);
+            customerReference.child("fbid").setValue(usuario.fbid);
             customerReference.child("habilitado").setValue(usuario.disponible);
             customerReference.child("email").setValue(usuario.email);
             customerReference.child("name").setValue(usuario.name);
@@ -71,6 +72,7 @@ public class UserTypeSelectionActivity extends AppCompatActivity {
 
             // Creamos el user en la db
             DatabaseReference driverReference = mDatabase.child("drivers").child(usuario.fbid);
+            driverReference.child("fbid").setValue(usuario.fbid);
             driverReference.child("cargoAuto").setValue(usuario.cargoAuto);
             driverReference.child("cargoRegistro").setValue(usuario.cargoRegistro);
             driverReference.child("cargoSeguro").setValue(usuario.cargoSeguro);
