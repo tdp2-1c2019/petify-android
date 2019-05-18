@@ -82,9 +82,11 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private int puntajeStars = 3;
     private RelativeLayout chStarsLayout;
     private Button mCalificar;
+    private TextView mPopupTitle;
     private TextView mPopupViajaA;
     private TextView mPopupCantM;
     private TextView mPopupObs;
+    private TextView mPopupPrecio;
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
@@ -123,6 +125,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         mDisponible = findViewById(R.id.disponible);
         mPopup = findViewById(R.id.popup);
         mPopupText = findViewById(R.id.popup_text);
+        mPopupTitle = findViewById(R.id.popup_title);
         mPopupOrigen = findViewById(R.id.popup_origen);
         mPopupDestino = findViewById(R.id.popup_destino);
         mPopupButtonAceptar = findViewById(R.id.aceptar_viaje);
@@ -130,6 +133,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         mPopupButtonAvanzar = findViewById(R.id.proxima_etapa_viaje);
         mPopupViajaA = findViewById(R.id.popup_viajaA);
         mPopupCantM = findViewById(R.id.popup_cantM);
+        mPopupPrecio = findViewById(R.id.popup_precio);
         mPopupObs = findViewById(R.id.popup_observaciones);
         chStarsLayout = findViewById(R.id.chStarLayout);
         mCalificar = findViewById(R.id.ch_popup_button_calificar);
@@ -312,18 +316,26 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         if (viaje == null) {
             mPopup.setVisibility(View.GONE);
         } else if (viaje.estado == Viaje.CARGADO) {
+            mPopupTitle.setText("Nuevo viaje");
             mPopupText.setVisibility(View.GONE);
             mDisponibleCard.setVisibility(View.VISIBLE);
             mPopupOrigen.setVisibility(View.VISIBLE);
+            mPopupOrigen.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dot, 0, 0, 0);
             mPopupDestino.setVisibility(View.VISIBLE);
-            mPopupOrigen.setText("Origen: " + viaje.origin_address);
+            mPopupOrigen.setText(viaje.origin_address);
             mPopupOrigen.setBackgroundColor(Color.TRANSPARENT);
-            mPopupDestino.setText("Destino: " + viaje.destination_address);
-            mPopupCantM.setText("Mascotas: " + viaje.cantidadMascotas);
-            if (viaje.viajaAcompanante) mPopupViajaA.setText("Viaja acompañante");
-            else mPopupViajaA.setText("No viaja acompañante");
+            mPopupDestino.setText(viaje.destination_address);
+            mPopupDestino.setCompoundDrawablesWithIntrinsicBounds(R.drawable.place, 0, 0, 0);
+            mPopupCantM.setText(viaje.cantidadMascotas);
+            if (viaje.viajaAcompanante) mPopupViajaA.setText("SI");
+            else mPopupViajaA.setText("NO");
             mPopupViajaA.setVisibility(View.VISIBLE);
+            mPopupViajaA.setCompoundDrawablesWithIntrinsicBounds(R.drawable.person, 0, 0, 0);
             mPopupCantM.setVisibility(View.VISIBLE);
+            mPopupCantM.setCompoundDrawablesWithIntrinsicBounds(R.drawable.pawi, 0, 0, 0);
+            mPopupPrecio.setCompoundDrawablesWithIntrinsicBounds(R.drawable.money, 0, 0, 0);
+            mPopupPrecio.setText(viaje.precio.substring(2));
+            mPopupPrecio.setVisibility(View.VISIBLE);
             if (!viaje.observaciones.trim().isEmpty()) {
                 mPopupObs.setText("Observaciones: " + viaje.observaciones);
                 mPopupObs.setVisibility(View.VISIBLE);
@@ -333,6 +345,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             mPopupButtonAceptar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mPopupTitle.setText("Viaje en curso");
                     mPopupCantM.setVisibility(View.GONE);
                     mPopupObs.setVisibility(View.GONE);
                     mPopupViajaA.setVisibility(View.GONE);
