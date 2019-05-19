@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -16,6 +15,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.app.petify.R;
+import com.app.petify.models.Precio;
 import com.app.petify.models.Viaje;
 import com.facebook.Profile;
 import com.google.firebase.database.DataSnapshot;
@@ -56,6 +56,7 @@ public class CargarViajeActivity extends AppCompatActivity {
     private int sumMascotas;
     private Viaje viaje;
     private boolean viajeAcomp = false;
+    public Precio precioCfg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,6 +200,17 @@ public class CargarViajeActivity extends AppCompatActivity {
 //            public void onCancelled(@NonNull DatabaseError databaseError) {
 //            }
 //        });
+        mDatabase.child("conf").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                precioCfg = dataSnapshot.getValue(Precio.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void updateTarifa() {
@@ -210,13 +222,13 @@ public class CargarViajeActivity extends AppCompatActivity {
             float total = 0;
             if (sumMascotas > 0 && sumMascotas <= 3) {
                 if (viajeAcomp)
-                    total += 100;
-                total += 50 * sumMascotas;
-                total += Integer.parseInt(duration.split(" ")[0]) * 5;
-                total += Float.parseFloat(distance.split(" ")[0]) * 25;
+                    total += Integer.parseInt(precioCfg.precioAcom);
+                total += Integer.parseInt(precioCfg.precioMascota) * sumMascotas;
+                total += Integer.parseInt(duration.split(" ")[0]) * Integer.parseInt(precioCfg.precioMinuto);
+                total += Float.parseFloat(distance.split(" ")[0]) * Integer.parseInt(precioCfg.precioKm);
                 int hour = LocalDateTime.now().getHour();
-                if (hour >= 18 || hour < 6)
-                    total *= 1.5;
+                if (hour >= Integer.parseInt(precioCfg.inicioHN) || hour < Integer.parseInt(precioCfg.finHN))
+                    total *= Float.parseFloat(precioCfg.multiplicadorHN);
                 return "$ " + String.format("%.02f", total);
             }
             return "";
