@@ -29,7 +29,7 @@ public class Viaje implements Serializable {
     public String observaciones;
     public int estado;
     public String eta;
-    public String precio;
+    public Double precio;
     public String fecha;
     public int puntaje_chofer;
     public int puntaje_pasajero;

@@ -334,7 +334,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             mPopupCantM.setVisibility(View.VISIBLE);
             mPopupCantM.setCompoundDrawablesWithIntrinsicBounds(R.drawable.pawi, 0, 0, 0);
             mPopupPrecio.setCompoundDrawablesWithIntrinsicBounds(R.drawable.money, 0, 0, 0);
-            mPopupPrecio.setText(viaje.precio.substring(2));
+            mPopupPrecio.setText(viaje.precio.toString());
             mPopupPrecio.setVisibility(View.VISIBLE);
             if (!viaje.observaciones.trim().isEmpty()) {
                 mPopupObs.setText("Observaciones: " + viaje.observaciones);
@@ -492,6 +492,10 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void locateAndZoomUser() {
+        // Check for Location permissions
+        if (ContextCompat.checkSelfPermission(DriverHomeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(DriverHomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION);
+        }
         mMap.setMyLocationEnabled(true);
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override

@@ -63,6 +63,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
     private CardView mPopup;
     private TextView mPopupText;
     private Button mPopupButton;
+    private Button mRechazarButton;
     private GoogleMap mMap;
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -100,6 +101,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
         mPopup = findViewById(R.id.popup);
         mPopupText = findViewById(R.id.popup_text);
         mPopupButton = findViewById(R.id.popup_button);
+        mRechazarButton = findViewById(R.id.reject_button);
         mPopupButtonCalificar = findViewById(R.id.popup_button_calificar);
         pStarsLayout = findViewById(R.id.pStarLayout);
         mLayContinuarBuscando = findViewById(R.id.layoutContinuarBuscando);
@@ -143,6 +145,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         mPopupButton.setVisibility(View.VISIBLE);
                         mPopupButton.setText("Cancelar");
                         mPopupButton.setBackgroundColor(Color.RED);
+                        mRechazarButton.setVisibility(View.GONE);
                         pStarsLayout.setVisibility(View.GONE);
                         mPopupButtonCalificar.setVisibility(View.GONE);
                         mLayContinuarBuscando.setVisibility(View.GONE);
@@ -156,6 +159,19 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                                     public Object then(@NonNull Task<HttpsCallableResult> task) throws Exception {
                                         Intent intent = new Intent(getBaseContext(), MapsActivity.class);
                                         startActivity(intent);
+                                        return null;
+                                    }
+                                });
+                            }
+                        });
+                        mRechazarButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Map<String, String> data = new HashMap<>();
+                                data.put("viajeid", viaje.id);
+                                mFunctions.getHttpsCallable("rechazarViaje").call(data).continueWith(new Continuation<HttpsCallableResult, Object>() {
+                                    @Override
+                                    public Object then(@NonNull Task<HttpsCallableResult> task) throws Exception {
                                         return null;
                                     }
                                 });
@@ -200,12 +216,16 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         mPopupButton.setVisibility(View.VISIBLE);
                         mPopupButton.setText("Cancelar");
                         mPopupButton.setBackgroundColor(Color.RED);
+                        mRechazarButton.setVisibility(View.VISIBLE);
+                        mRechazarButton.setText("Rechazar Chofer");
+                        mRechazarButton.setBackgroundColor(Color.GREEN);
                         break;
                     case Viaje.CHOFER_EN_PUERTA:
                         mPopupText.setText(choferName + " esta en el punto de encuentro");
                         pStarsLayout.setVisibility(View.GONE);
                         mPopupButtonCalificar.setVisibility(View.GONE);
                         mPopupButton.setVisibility(View.GONE);
+                        mRechazarButton.setVisibility(View.GONE);
                         limpiarMapa(1);
                         p1m.remove();
                         break;
@@ -214,12 +234,14 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         pStarsLayout.setVisibility(View.GONE);
                         mPopupButtonCalificar.setVisibility(View.GONE);
                         mPopupButton.setVisibility(View.GONE);
+                        mRechazarButton.setVisibility(View.GONE);
                         break;
                     case Viaje.FINALIZADO:
                         mPopupText.setText("Califica a " + choferName);
                         pStarsLayout.setVisibility(View.VISIBLE);
                         mPopupButtonCalificar.setVisibility(View.VISIBLE);
                         mPopupButton.setVisibility(View.GONE);
+                        mRechazarButton.setVisibility(View.GONE);
                         break;
                     case Viaje.RECHAZADO:
                         Intent intent = new Intent(getBaseContext(), MapsActivity.class);
@@ -228,6 +250,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                     case Viaje.CANCELADO_GRUPO:
                         mPopupText.setText("No se encontraron choferes");
                         mPopupButton.setVisibility(View.GONE);
+                        mRechazarButton.setVisibility(View.GONE);
                         mLayContinuarBuscando.setVisibility(View.VISIBLE);
                     default:
                         break;

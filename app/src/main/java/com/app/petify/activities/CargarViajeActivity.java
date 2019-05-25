@@ -84,7 +84,7 @@ public class CargarViajeActivity extends AppCompatActivity {
                     viaje.viajaAcompanante = mViajaAcompanante.isChecked();
                     viaje.formaPago = mFormaPago.getSelectedItem().toString();
                     viaje.observaciones = mObservaciones.getText().toString();
-                    viaje.precio = mTarifa.getText().toString();
+                    viaje.precio = Double.parseDouble(mTarifa.getText().toString().substring(2));
                     mDatabase.child("viajes").child(viaje.id).setValue(viaje);
                     Intent i = new Intent(getBaseContext(), ViajeCursoActivity.class);
                     i.putExtra("VIAJE_ID", viaje.id);
@@ -214,13 +214,13 @@ public class CargarViajeActivity extends AppCompatActivity {
     }
 
     public void updateTarifa() {
-        mTarifa.setText(tarifa());
+        mTarifa.setText("$ "+tarifa().toString());
     }
 
-    public String tarifa() {
+    public Double tarifa() {
         try {
-            float total = 0;
-            if (sumMascotas > 0 && sumMascotas <= 3) {
+            Double total = 0.0;
+            if (sumMascotas >= 0 && sumMascotas <= 3) {
                 if (viajeAcomp)
                     total += Integer.parseInt(precioCfg.precioAcom);
                 total += Integer.parseInt(precioCfg.precioMascota) * sumMascotas;
@@ -229,11 +229,12 @@ public class CargarViajeActivity extends AppCompatActivity {
                 int hour = LocalDateTime.now().getHour();
                 if (hour >= Integer.parseInt(precioCfg.inicioHN) || hour < Integer.parseInt(precioCfg.finHN))
                     total *= Float.parseFloat(precioCfg.multiplicadorHN);
-                return "$ " + String.format("%.02f", total);
+                return total;
             }
-            return "";
+            return 0.0;
         } catch (Exception e) {
-            return "";
+            e.printStackTrace();
+            return 0.0;
         }
     }
 }

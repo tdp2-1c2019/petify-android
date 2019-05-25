@@ -97,13 +97,28 @@
                     </LinearLayout>
                 </RelativeLayout>
 
-                <Button
-                    android:id="@+id/popup_button"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_10sdp"
-                    android:backgroundTint="@color/red"
-                    android:theme="@style/Button" />
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/reject_button"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/_10sdp"
+                        android:backgroundTint="@color/green"
+                        android:theme="@style/Button" />
+
+                    <Button
+                        android:id="@+id/popup_button"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/_10sdp"
+                        android:backgroundTint="@color/red"
+                        android:theme="@style/Button" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/popup_button_calificar"
