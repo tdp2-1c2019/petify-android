@@ -23,6 +23,7 @@ import com.akexorcist.googledirection.model.Leg;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.app.petify.R;
 import com.app.petify.models.Driver;
+import com.app.petify.models.Usuario;
 import com.app.petify.models.Viaje;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -58,7 +59,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
     private int LOCATION_PERMISSION = 2;
 
     private Viaje viaje;
-    private String choferName = "";
+    private Usuario chofer;
 
     private CardView mPopup;
     private TextView mPopupText;
@@ -199,11 +200,11 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
 
                             }
                         });
-                        mDatabase.child("drivers").child(viaje.chofer).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+                        mDatabase.child("drivers").child(viaje.chofer).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                choferName = dataSnapshot.getValue(String.class);
-                                mPopupText.setText(choferName + " llegara en " + viaje.eta + " hacia el origen");
+                                chofer = dataSnapshot.getValue(Usuario.class);
+                                mPopupText.setText(chofer.name+ " (" +chofer.puntuacion+ "★) llegara en " + viaje.eta + " hacia el origen");
                             }
 
                             @Override
@@ -221,7 +222,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         mRechazarButton.setBackgroundColor(Color.GREEN);
                         break;
                     case Viaje.CHOFER_EN_PUERTA:
-                        mPopupText.setText(choferName + " esta en el punto de encuentro");
+                        mPopupText.setText(chofer.name+ " (" +chofer.puntuacion+ "★) esta en el punto de encuentro");
                         pStarsLayout.setVisibility(View.GONE);
                         mPopupButtonCalificar.setVisibility(View.GONE);
                         mPopupButton.setVisibility(View.GONE);
@@ -230,14 +231,14 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         p1m.remove();
                         break;
                     case Viaje.EN_CURSO:
-                        mPopupText.setText(choferName + " llegara a destino en " + viaje.eta + " minutos");
+                        mPopupText.setText(chofer.name+ " (" +chofer.puntuacion+ "★) llegara a destino en " + viaje.eta);
                         pStarsLayout.setVisibility(View.GONE);
                         mPopupButtonCalificar.setVisibility(View.GONE);
                         mPopupButton.setVisibility(View.GONE);
                         mRechazarButton.setVisibility(View.GONE);
                         break;
                     case Viaje.FINALIZADO:
-                        mPopupText.setText("Califica a " + choferName);
+                        mPopupText.setText("Califica a " + chofer.name + " (" +chofer.puntuacion+ "★)");
                         pStarsLayout.setVisibility(View.VISIBLE);
                         mPopupButtonCalificar.setVisibility(View.VISIBLE);
                         mPopupButton.setVisibility(View.GONE);
@@ -248,7 +249,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         startActivity(intent);
                         break;
                     case Viaje.CANCELADO_GRUPO:
-                        mPopupText.setText("No se encontraron choferes");
+                        mPopupText.setText("No se encontraron choferes. Quieres seguir buscando?");
                         mPopupButton.setVisibility(View.GONE);
                         mRechazarButton.setVisibility(View.GONE);
                         mLayContinuarBuscando.setVisibility(View.VISIBLE);

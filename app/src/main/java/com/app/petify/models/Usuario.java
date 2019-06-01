@@ -10,6 +10,8 @@ public class Usuario implements Serializable {
     public String telefono;
     public String telefonoEmergencia;
     public String direccion;
+    public Double puntuacion;
+    public Integer puntuaciones;
     public boolean isCustomer;
     public boolean isDriver;
     public boolean habilitado;
@@ -17,6 +19,8 @@ public class Usuario implements Serializable {
     public boolean cargoAuto;
     public boolean cargoRegistro;
     public boolean cargoSeguro;
+
+    public Usuario() {}
 
     public Usuario(HashMap<String, Object> map) {
         // Obligatorios
@@ -29,6 +33,8 @@ public class Usuario implements Serializable {
         telefono = (String) (map.containsKey("telefono") ? map.get("telefono") : null);
         telefonoEmergencia = (String) (map.containsKey("telefonoEmergencia") ? map.get("telefonoEmergencia") : null);
         direccion = (String) (map.containsKey("direccion") ? map.get("direccion") : null);
+        puntuacion = (Double) (map.containsKey("puntuacion") ? map.get("puntuacion") : 0.0);
+        puntuaciones = (Integer) (map.containsKey("puntuaciones") ? map.get("puntuaciones") : 0);
         habilitado = (boolean) (map.containsKey("habilitado") ? map.get("habilitado") : false);
         disponible = (boolean) (map.containsKey("disponible") ? map.get("disponible") : false);
         cargoAuto = (boolean) (map.containsKey("cargoAuto") ? map.get("cargoAuto") : false);
