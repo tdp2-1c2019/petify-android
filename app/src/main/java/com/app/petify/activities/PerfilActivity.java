@@ -40,6 +40,8 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
         Intent i = null;
         if (id == R.id.nav_item_inicio)
             i = new Intent(this, DriverHomeActivity.class);
+        if (id == R.id.nav_item_viajes)
+            i = new Intent(this, MyTrips.class);
         startActivity(i);
         return false;
     }

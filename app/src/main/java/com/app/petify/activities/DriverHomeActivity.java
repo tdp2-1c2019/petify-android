@@ -239,7 +239,8 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         final ValueEventListener velcancelado = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue(Viaje.class).estado == Viaje.CANCELADO) {
+                Viaje v = dataSnapshot.getValue(Viaje.class);
+                if (v != null && v.estado == Viaje.CANCELADO) {
                     viaje = null;
                     limpiarMapa(1);
                     limpiarMapa(2);
@@ -568,6 +569,8 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
         Intent i = null;
         if (id == R.id.nav_item_perfil)
             i = new Intent(this, PerfilActivity.class);
+        if (id == R.id.nav_item_viajes)
+            i = new Intent(this, MyTrips.class);
         startActivity(i);
         return false;
     }
