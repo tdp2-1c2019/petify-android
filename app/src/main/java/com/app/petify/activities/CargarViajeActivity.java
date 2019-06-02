@@ -1,5 +1,7 @@
 package com.app.petify.activities;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,11 +10,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.app.petify.R;
 import com.app.petify.models.Precio;
@@ -26,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -58,6 +64,17 @@ public class CargarViajeActivity extends AppCompatActivity {
     private boolean viajeAcomp = false;
     public Precio precioCfg;
 
+    ImageButton mButtonDia;
+    ImageButton mButtonHora;
+    final Calendar c = Calendar.getInstance();
+    final int mes = c.get(Calendar.MONTH);
+    final int dia = c.get(Calendar.DAY_OF_MONTH);
+    final int anio = c.get(Calendar.YEAR);
+    EditText mDiaReserva;
+    EditText mHoraReserva;
+    final int hora = c.get(Calendar.HOUR_OF_DAY);
+    final int minuto = c.get(Calendar.MINUTE);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +96,13 @@ public class CargarViajeActivity extends AppCompatActivity {
                     viaje.destination_address = destination_address;
                     viaje.destination_latitude = destination_latitude;
                     viaje.destination_longitude = destination_longitude;
-                    viaje.fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
+                    if (mDiaReserva == null || mHoraReserva == null || mDiaReserva.equals("") || mHoraReserva.equals("")) {
+                        viaje.fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
+                        viaje.reserva = false;
+                    } else {
+                        viaje.fecha = mDiaReserva.getText() + " " + mHoraReserva.getText();
+                        viaje.reserva = true;
+                    }
                     viaje.cantidadMascotas = String.valueOf(sumMascotas);
                     viaje.viajaAcompanante = mViajaAcompanante.isChecked();
                     viaje.formaPago = mFormaPago.getSelectedItem().toString();
@@ -211,10 +234,26 @@ public class CargarViajeActivity extends AppCompatActivity {
 
             }
         });
+        mButtonDia = findViewById(R.id.cargar_pick_dia);
+        mButtonDia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                obtenerFecha();
+            }
+        });
+        mDiaReserva = findViewById(R.id.cargar_dia);
+        mButtonHora = findViewById(R.id.cargar_pick_hora);
+        mButtonHora.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                obtenerHora();
+            }
+        });
+        mHoraReserva = findViewById(R.id.cargar_hora);
     }
 
     public void updateTarifa() {
-        mTarifa.setText("$ "+tarifa().toString());
+        mTarifa.setText("$ " + tarifa().toString());
     }
 
     public Double tarifa() {
@@ -236,5 +275,30 @@ public class CargarViajeActivity extends AppCompatActivity {
             e.printStackTrace();
             return 0.0;
         }
+    }
+
+    private void obtenerFecha() {
+        DatePickerDialog recogerFecha = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                final int mesActual = month + 1;
+                String diaFormateado = (dayOfMonth < 10) ? "0" + String.valueOf(dayOfMonth) : String.valueOf(dayOfMonth);
+                String mesFormateado = (mesActual < 10) ? "0" + String.valueOf(mesActual) : String.valueOf(mesActual);
+                mDiaReserva.setText(year + "/" + mesFormateado + "/" + diaFormateado);
+            }
+        }, anio, mes, dia);
+        recogerFecha.show();
+    }
+
+    private void obtenerHora() {
+        TimePickerDialog recogerHora = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                String horaFormateada = (hourOfDay < 10) ? "0" + String.valueOf(hourOfDay) : String.valueOf(hourOfDay);
+                String minutoFormateado = (minute < 10) ? "0" + String.valueOf(minute) : String.valueOf(minute);
+                mHoraReserva.setText(horaFormateada + ":" + minutoFormateado);
+            }
+        }, hora, minuto, true);
+        recogerHora.show();
     }
 }

@@ -34,4 +34,5 @@ public class Viaje implements Serializable {
     public int puntaje_chofer;
     public int puntaje_pasajero;
     public int duracion;
+    public boolean reserva;
 }
