@@ -168,8 +168,9 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         mRechazarButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Map<String, String> data = new HashMap<>();
+                                Map<String, Object> data = new HashMap<>();
                                 data.put("viajeid", viaje.id);
+                                data.put("rechazaDriver", false);
                                 mFunctions.getHttpsCallable("rechazarViaje").call(data).continueWith(new Continuation<HttpsCallableResult, Object>() {
                                     @Override
                                     public Object then(@NonNull Task<HttpsCallableResult> task) throws Exception {

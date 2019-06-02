@@ -450,8 +450,9 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             mPopupButtonCancelar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Map<String, String> data = new HashMap<>();
+                    Map<String, Object> data = new HashMap<>();
                     data.put("viajeid", viaje.id);
+                    data.put("rechazaDriver", true);
                     viaje.estado = Viaje.RECHAZADO;
                     mFunctions.getHttpsCallable("rechazarViaje").call(data).continueWith(new Continuation<HttpsCallableResult, Object>() {
                         @Override
