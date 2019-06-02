@@ -56,8 +56,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.app.petify.models.Viaje.CHOFER_EN_PUERTA;
@@ -323,19 +325,21 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             mPopupOrigen.setVisibility(View.VISIBLE);
             mPopupOrigen.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dot, 0, 0, 0);
             mPopupDestino.setVisibility(View.VISIBLE);
-            mPopupOrigen.setText(viaje.origin_address);
+            mPopupOrigen.setText("Origen: " + viaje.origin_address);
             mPopupOrigen.setBackgroundColor(Color.TRANSPARENT);
-            mPopupDestino.setText(viaje.destination_address);
+            mPopupDestino.setText("Destino: " + viaje.destination_address);
             mPopupDestino.setCompoundDrawablesWithIntrinsicBounds(R.drawable.place, 0, 0, 0);
-            mPopupCantM.setText(viaje.cantidadMascotas);
-            if (viaje.viajaAcompanante) mPopupViajaA.setText("SI");
-            else mPopupViajaA.setText("NO");
+            mPopupCantM.setText("Cantidad de mascotas: "+viaje.cantidadMascotas);
+            if (viaje.viajaAcompanante) mPopupViajaA.setText("Viaja acompañante");
+            else mPopupViajaA.setText("No viaja acompañante");
             mPopupViajaA.setVisibility(View.VISIBLE);
             mPopupViajaA.setCompoundDrawablesWithIntrinsicBounds(R.drawable.person, 0, 0, 0);
             mPopupCantM.setVisibility(View.VISIBLE);
             mPopupCantM.setCompoundDrawablesWithIntrinsicBounds(R.drawable.pawi, 0, 0, 0);
             mPopupPrecio.setCompoundDrawablesWithIntrinsicBounds(R.drawable.money, 0, 0, 0);
-            mPopupPrecio.setText(viaje.precio.toString());
+            NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("es", "AR"));
+            String precio = numberFormat.format(viaje.precio);
+            mPopupPrecio.setText("Precio: "+precio+" ("+viaje.formaPago+")");
             mPopupPrecio.setVisibility(View.VISIBLE);
             if (!viaje.observaciones.trim().isEmpty()) {
                 mPopupObs.setText("Observaciones: " + viaje.observaciones);
