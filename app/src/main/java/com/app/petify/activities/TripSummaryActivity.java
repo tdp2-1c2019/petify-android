@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -31,16 +30,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+import static com.app.petify.models.Viaje.RESERVA_CANCELADA;
 
 public class TripSummaryActivity extends FragmentActivity implements OnMapReadyCallback {
     private DatabaseReference mDatabase;
@@ -134,14 +130,15 @@ public class TripSummaryActivity extends FragmentActivity implements OnMapReadyC
                     public void onClick(View v) {
                         cancelarReserva.setVisibility(View.GONE);
                         reservaCancelada.setVisibility(View.VISIBLE);
-                        Map<String, Object> data = new HashMap<>();
-                        data.put("viajeid", viaje.id);
-                        mFunctions.getHttpsCallable("cancelarReserva").call(data).continueWith(new Continuation<HttpsCallableResult, Object>() {
-                            @Override
-                            public Object then(@NonNull Task<HttpsCallableResult> task) throws Exception {
-                                return null;
-                            }
-                        });
+//                        Map<String, Object> data = new HashMap<>();
+//                        data.put("viajeid", viaje.id);
+//                        mFunctions.getHttpsCallable("cancelarReserva").call(data).continueWith(new Continuation<HttpsCallableResult, Object>() {
+//                            @Override
+//                            public Object then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+//                                return null;
+//                            }
+//                        });
+                        mDatabase.child("viajes").child(viaje.id).child("estado").setValue(RESERVA_CANCELADA);
                     }
                 });
             }

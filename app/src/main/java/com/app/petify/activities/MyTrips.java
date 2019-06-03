@@ -32,6 +32,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.app.petify.models.Viaje.CANCELADO;
+import static com.app.petify.models.Viaje.CANCELADO_GRUPO;
+import static com.app.petify.models.Viaje.RESERVA_CANCELADA;
+
 public class MyTrips extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     RecyclerView rv;
     RecyclerView.LayoutManager layoutManager;
@@ -76,14 +80,15 @@ public class MyTrips extends AppCompatActivity implements NavigationView.OnNavig
                         .filter((v) ->
                                 (v.chofer != null && v.chofer.equals(Profile.getCurrentProfile().getId())) ||
                                         (v.pasajero != null && v.pasajero.equals(Profile.getCurrentProfile().getId())))
+                        .filter((v) -> v.estado != RESERVA_CANCELADA && v.estado != CANCELADO && v.estado != CANCELADO_GRUPO)
                         .sorted(new Comparator<Viaje>() {
                             @Override
                             public int compare(Viaje o1, Viaje o2) {
-                                return o2.fecha.compareTo(o1.fecha);
+                                return o1.fecha.compareTo(o2.fecha);
                             }
                         })
                         .collect(Collectors.toList());
-                adapter = new ViajeAdapter(vs, getBaseContext());
+                adapter = new ViajeAdapter(viajes, getBaseContext());
                 rv.setAdapter(adapter);
                 rv.addOnItemTouchListener(new RecyclerItemClickListener(getBaseContext(), rv, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override

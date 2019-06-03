@@ -13,6 +13,7 @@ public class Viaje implements Serializable {
     public static final int CANCELADO = 20;
     public static final int CANCELADO_GRUPO = 90;
     public static final int CHOFER_RESERVADO = 88;
+    public static final int RESERVA_CANCELADA = 77;
 
     public String id;
 

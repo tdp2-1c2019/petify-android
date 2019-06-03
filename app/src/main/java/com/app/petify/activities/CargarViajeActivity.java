@@ -298,6 +298,7 @@ public class CargarViajeActivity extends AppCompatActivity {
                 mDiaReserva.setText(year + "/" + mesFormateado + "/" + diaFormateado);
             }
         }, anio, mes, dia);
+        recogerFecha.getDatePicker().setMinDate(System.currentTimeMillis());
         recogerFecha.show();
     }
 
