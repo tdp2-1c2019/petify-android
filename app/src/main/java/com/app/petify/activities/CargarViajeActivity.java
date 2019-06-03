@@ -54,6 +54,8 @@ public class CargarViajeActivity extends AppCompatActivity {
     private Double destination_longitude;
     private String duration;
     private String distance;
+    private LinearLayout mLLFechaReserva;
+    private LinearLayout mLLHoraReserva;
     private LinearLayout mLLCantMascotas;
     private TextView mTarifa;
 
@@ -83,38 +85,45 @@ public class CargarViajeActivity extends AppCompatActivity {
         mSolicitarViaje.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sumMascotas = Integer.parseInt(mCantidadMascotasP.getSelectedItem().toString()) + Integer.parseInt(mCantidadMascotasM.getSelectedItem().toString()) + Integer.parseInt(mCantidadMascotasG.getSelectedItem().toString());
-                if (sumMascotas <= 3 && sumMascotas > 0) {
-                    mLLCantMascotas.setBackgroundResource(0);
-                    viaje = new Viaje();
-                    viaje.id = UUID.randomUUID().toString();
-                    viaje.pasajero = Profile.getCurrentProfile().getId();
-                    viaje.estado = Viaje.CARGADO; // TODO en chofer se asigna despues
-                    viaje.origin_address = origin_address;
-                    viaje.origin_latitude = origin_latitude;
-                    viaje.origin_longitude = origin_longitude;
-                    viaje.destination_address = destination_address;
-                    viaje.destination_latitude = destination_latitude;
-                    viaje.destination_longitude = destination_longitude;
-                    if (mDiaReserva.getText().toString().equals("") || mHoraReserva.getText().toString().equals("")) {
-                        viaje.fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
-                        viaje.reserva = false;
-                    } else {
-                        viaje.fecha = mDiaReserva.getText() + " " + mHoraReserva.getText();
-                        viaje.reserva = true;
-                    }
-                    viaje.cantidadMascotas = String.valueOf(sumMascotas);
-                    viaje.viajaAcompanante = mViajaAcompanante.isChecked();
-                    viaje.formaPago = mFormaPago.getSelectedItem().toString();
-                    viaje.observaciones = mObservaciones.getText().toString();
-                    viaje.precio = Double.parseDouble(mTarifa.getText().toString().substring(2));
-                    mDatabase.child("viajes").child(viaje.id).setValue(viaje);
-                    Intent i = new Intent(getBaseContext(), ViajeCursoActivity.class);
-                    i.putExtra("VIAJE_ID", viaje.id);
-                    i.putExtra("CHOFER_ID", viaje.chofer);
-                    startActivity(i);
+                viaje = new Viaje();
+                if (mDiaReserva.getText().toString().equals("") || mHoraReserva.getText().toString().equals("")) {
+                    viaje.fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
+                    viaje.reserva = false;
                 } else {
-                    mLLCantMascotas.setBackground(getDrawable(R.drawable.bordered));
+                    viaje.fecha = mDiaReserva.getText() + " " + mHoraReserva.getText();
+                    viaje.reserva = true;
+                }
+                if (LocalDateTime.now().isBefore(LocalDateTime.parse(viaje.fecha, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")))) {
+                    mLLFechaReserva.setBackgroundResource(0);
+                    mLLHoraReserva.setBackgroundResource(0);
+                    sumMascotas = Integer.parseInt(mCantidadMascotasP.getSelectedItem().toString()) + Integer.parseInt(mCantidadMascotasM.getSelectedItem().toString()) + Integer.parseInt(mCantidadMascotasG.getSelectedItem().toString());
+                    if (sumMascotas <= 3 && sumMascotas > 0) {
+                        mLLCantMascotas.setBackgroundResource(0);
+                        viaje.id = UUID.randomUUID().toString();
+                        viaje.pasajero = Profile.getCurrentProfile().getId();
+                        viaje.estado = Viaje.CARGADO; // TODO en chofer se asigna despues
+                        viaje.origin_address = origin_address;
+                        viaje.origin_latitude = origin_latitude;
+                        viaje.origin_longitude = origin_longitude;
+                        viaje.destination_address = destination_address;
+                        viaje.destination_latitude = destination_latitude;
+                        viaje.destination_longitude = destination_longitude;
+                        viaje.cantidadMascotas = String.valueOf(sumMascotas);
+                        viaje.viajaAcompanante = mViajaAcompanante.isChecked();
+                        viaje.formaPago = mFormaPago.getSelectedItem().toString();
+                        viaje.observaciones = mObservaciones.getText().toString();
+                        viaje.precio = Double.parseDouble(mTarifa.getText().toString().substring(2));
+                        mDatabase.child("viajes").child(viaje.id).setValue(viaje);
+                        Intent i = new Intent(getBaseContext(), ViajeCursoActivity.class);
+                        i.putExtra("VIAJE_ID", viaje.id);
+                        i.putExtra("CHOFER_ID", viaje.chofer);
+                        startActivity(i);
+                    } else {
+                        mLLCantMascotas.setBackground(getDrawable(R.drawable.bordered));
+                    }
+                } else {
+                    mLLFechaReserva.setBackground(getDrawable(R.drawable.bordered));
+                    mLLHoraReserva.setBackground(getDrawable(R.drawable.bordered));
                 }
             }
         });
@@ -138,6 +147,8 @@ public class CargarViajeActivity extends AppCompatActivity {
         TextView mDistanceText = findViewById(R.id.distance_text);
         mDistanceText.setText("Distancia estimada: " + distance);
 
+        mLLFechaReserva = findViewById(R.id.linearlayout_fecha);
+        mLLHoraReserva = findViewById(R.id.linearlayout_hora);
         mLLCantMascotas = findViewById(R.id.linearlayout_cant_mascotas);
         mCantidadMascotasP = findViewById(R.id.cantidad_mascotas_p);
         mCantidadMascotasP.setSelection(0);

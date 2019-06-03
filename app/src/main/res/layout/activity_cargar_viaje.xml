@@ -96,6 +96,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/linearlayout_fecha"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp">
@@ -131,6 +132,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/linearlayout_hora"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp">
