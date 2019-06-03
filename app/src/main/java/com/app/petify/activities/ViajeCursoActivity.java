@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -205,7 +206,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 chofer = dataSnapshot.getValue(Usuario.class);
-                                mPopupText.setText(chofer.name+ " (" +chofer.puntuacion+ "★) llegara en " + viaje.eta + " hacia el origen");
+                                mPopupText.setText(chofer.name + " (" + chofer.puntuacion + "★) llegara en " + viaje.eta + " hacia el origen");
                             }
 
                             @Override
@@ -223,7 +224,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         mRechazarButton.setBackgroundColor(Color.GREEN);
                         break;
                     case Viaje.CHOFER_EN_PUERTA:
-                        mPopupText.setText(chofer.name+ " (" +chofer.puntuacion+ "★) esta en el punto de encuentro");
+                        mPopupText.setText(chofer.name + " (" + chofer.puntuacion + "★) esta en el punto de encuentro");
                         pStarsLayout.setVisibility(View.GONE);
                         mPopupButtonCalificar.setVisibility(View.GONE);
                         mPopupButton.setVisibility(View.GONE);
@@ -232,14 +233,14 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         p1m.remove();
                         break;
                     case Viaje.EN_CURSO:
-                        mPopupText.setText(chofer.name+ " (" +chofer.puntuacion+ "★) llegara a destino en " + viaje.eta);
+                        mPopupText.setText(chofer.name + " (" + chofer.puntuacion + "★) llegara a destino en " + viaje.eta);
                         pStarsLayout.setVisibility(View.GONE);
                         mPopupButtonCalificar.setVisibility(View.GONE);
                         mPopupButton.setVisibility(View.GONE);
                         mRechazarButton.setVisibility(View.GONE);
                         break;
                     case Viaje.FINALIZADO:
-                        mPopupText.setText("Califica a " + chofer.name + " (" +chofer.puntuacion+ "★)");
+                        mPopupText.setText("Califica a " + chofer.name + " (" + chofer.puntuacion + "★)");
                         pStarsLayout.setVisibility(View.VISIBLE);
                         mPopupButtonCalificar.setVisibility(View.VISIBLE);
                         mPopupButton.setVisibility(View.GONE);
@@ -254,6 +255,29 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         mPopupButton.setVisibility(View.GONE);
                         mRechazarButton.setVisibility(View.GONE);
                         mLayContinuarBuscando.setVisibility(View.VISIBLE);
+                        break;
+                    case Viaje.CHOFER_RESERVADO:
+                        mDatabase.child("drivers").child(viaje.chofer).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                chofer = dataSnapshot.getValue(Usuario.class);
+                                mPopupText.setText("Se asigno al chofer " + chofer.name + " (" + chofer.puntuacion + "★)");
+                                final Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent i = new Intent(ViajeCursoActivity.this, MapsActivity.class);
+                                        startActivity(i);
+                                    }
+                                }, 2000);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        break;
                     default:
                         break;
                 }

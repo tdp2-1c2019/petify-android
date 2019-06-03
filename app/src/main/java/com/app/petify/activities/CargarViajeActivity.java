@@ -96,7 +96,7 @@ public class CargarViajeActivity extends AppCompatActivity {
                     viaje.destination_address = destination_address;
                     viaje.destination_latitude = destination_latitude;
                     viaje.destination_longitude = destination_longitude;
-                    if (mDiaReserva == null || mHoraReserva == null || mDiaReserva.equals("") || mHoraReserva.equals("")) {
+                    if (mDiaReserva.getText().toString().equals("") || mHoraReserva.getText().toString().equals("")) {
                         viaje.fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
                         viaje.reserva = false;
                     } else {

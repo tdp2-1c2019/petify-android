@@ -12,6 +12,7 @@ import com.app.petify.R;
 
 import java.util.List;
 
+import static com.app.petify.models.Viaje.CHOFER_RESERVADO;
 import static com.app.petify.models.Viaje.EN_CURSO;
 import static com.app.petify.models.Viaje.FINALIZADO;
 
@@ -49,10 +50,6 @@ public class ViajeAdapter extends RecyclerView.Adapter<ViajeAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-//        if (dataset[position].getReserva())
-//            holder.tv.setTextColor(context.getColor(R.color.dark));
-//        else holder.tv.setTextColor(context.getColor(R.color.lightGrey));
-//        holder.tv.setText(dataset.get(position).id);
         holder.from.setText(dataset.get(position).origin_address);
         holder.from.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dot, 0, 0, 0);
         holder.to.setText(dataset.get(position).destination_address);
@@ -69,8 +66,10 @@ public class ViajeAdapter extends RecyclerView.Adapter<ViajeAdapter.ViewHolder> 
             holder.status.setText("Finalizado");
             holder.status.setBackgroundResource(R.color.grey);
             holder.status.setTextColor(ContextCompat.getColor(context, R.color.dark));
-        } else {
-            holder.status.setVisibility(View.GONE);
+        } else if (dataset.get(position).estado == CHOFER_RESERVADO) {
+            holder.status.setText("Reserva");
+            holder.status.setBackgroundResource(R.color.colorAccent);
+            holder.status.setTextColor(ContextCompat.getColor(context, R.color.white));
         }
     }
 

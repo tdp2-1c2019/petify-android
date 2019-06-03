@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.app.petify.R;
 import com.app.petify.models.Viaje;
 import com.app.petify.models.ViajeAdapter;
+import com.app.petify.utils.RecyclerItemClickListener;
 import com.facebook.Profile;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +41,7 @@ public class MyTrips extends AppCompatActivity implements NavigationView.OnNavig
     private MenuItem itemPerfil;
     private DatabaseReference mDatabase;
     FloatingActionButton goTopButton;
+    List<Viaje> viajes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +66,13 @@ public class MyTrips extends AppCompatActivity implements NavigationView.OnNavig
         mDatabase.child("viajes").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Viaje> viajes = new ArrayList<>();
+                List<Viaje> vs = new ArrayList<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Viaje v = ds.getValue(Viaje.class);
                     if (v != null)
-                        viajes.add(v);
+                        vs.add(v);
                 }
-                viajes = viajes.stream()
+                viajes = vs.stream()
                         .filter((v) ->
                                 (v.chofer != null && v.chofer.equals(Profile.getCurrentProfile().getId())) ||
                                         (v.pasajero != null && v.pasajero.equals(Profile.getCurrentProfile().getId())))
@@ -81,8 +83,21 @@ public class MyTrips extends AppCompatActivity implements NavigationView.OnNavig
                             }
                         })
                         .collect(Collectors.toList());
-                adapter = new ViajeAdapter(viajes, getBaseContext());
+                adapter = new ViajeAdapter(vs, getBaseContext());
                 rv.setAdapter(adapter);
+                rv.addOnItemTouchListener(new RecyclerItemClickListener(getBaseContext(), rv, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Intent i = new Intent(MyTrips.this, TripSummaryActivity.class);
+                        i.putExtra("viaje", viajes.get(position));
+                        startActivity(i);
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+
+                    }
+                }));
             }
 
             @Override

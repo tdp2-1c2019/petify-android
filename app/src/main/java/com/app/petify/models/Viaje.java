@@ -12,6 +12,7 @@ public class Viaje implements Serializable {
     public static final int RECHAZADO = 999;
     public static final int CANCELADO = 20;
     public static final int CANCELADO_GRUPO = 90;
+    public static final int CHOFER_RESERVADO = 88;
 
     public String id;
 
@@ -31,8 +32,8 @@ public class Viaje implements Serializable {
     public String eta;
     public Double precio;
     public String fecha;
-    public int puntaje_chofer;
-    public int puntaje_pasajero;
+    public int puntaje_chofer = 0;
+    public int puntaje_pasajero = 0;
     public int duracion;
     public boolean reserva;
 }

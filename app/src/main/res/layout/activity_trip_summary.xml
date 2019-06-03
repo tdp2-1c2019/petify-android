@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.app.petify.activities.TripSummaryActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Petify"
+        android:textAlignment="center"
+        android:theme="@style/Title" />
+
+    <TextView
+        android:id="@+id/summary_from"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:drawablePadding="@dimen/_5sdp"
+        android:theme="@style/Subtitle" />
+
+    <TextView
+        android:id="@+id/summary_to"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:drawablePadding="@dimen/_5sdp"
+        android:theme="@style/Subtitle" />
+
+    <TextView
+        android:id="@+id/summary_fecha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:drawablePadding="@dimen/_5sdp"
+        android:theme="@style/Subtitle" />
+
+    <TextView
+        android:id="@+id/summary_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:drawablePadding="@dimen/_5sdp"
+        android:theme="@style/Subtitle" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/sumStar1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/stardisabled" />
+
+            <Button
+                android:id="@+id/sumStar2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/stardisabled" />
+
+            <Button
+                android:id="@+id/sumStar3"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/stardisabled" />
+
+            <Button
+                android:id="@+id/sumStar4"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/stardisabled" />
+
+            <Button
+                android:id="@+id/sumStar5"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/stardisabled" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/sumCalificar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorAccent"
+            android:text="CALIFICAR"
+            android:textColor="@color/white"
+            android:theme="@style/Button"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/sumMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        tools:context=".activities.TripSummaryActivity" />
+</LinearLayout>
