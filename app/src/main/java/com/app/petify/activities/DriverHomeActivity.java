@@ -114,6 +114,8 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private TextView drawerTitle;
     private MenuItem itemInicio;
 
+    private boolean acepto = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -325,8 +327,31 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
 
     private void procesarViaje() {
         if (viaje == null) {
+            acepto = false;
             mPopup.setVisibility(View.GONE);
         } else if (viaje.estado == Viaje.CARGADO) {
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (!acepto) {
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("viajeid", viaje.id);
+                        data.put("rechazaDriver", true);
+                        viaje.estado = Viaje.RECHAZADO;
+                        mFunctions.getHttpsCallable("rechazarViaje").call(data).continueWith(new Continuation<HttpsCallableResult, Object>() {
+                            @Override
+                            public Object then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                                viaje = null;
+                                procesarViaje();
+                                limpiarMapa(1);
+                                limpiarMapa(2);
+                                mDisponibleCard.setVisibility(View.VISIBLE);
+                                return null;
+                            }
+                        });
+                    }
+                }
+            }, 30000);
             if (viaje.reserva)
                 mPopupTitle.setText("Nueva reserva");
             else
@@ -340,7 +365,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             mPopupOrigen.setBackgroundColor(Color.TRANSPARENT);
             mPopupDestino.setText("Destino: " + viaje.destination_address);
             mPopupDestino.setCompoundDrawablesWithIntrinsicBounds(R.drawable.place, 0, 0, 0);
-            mPopupCantM.setText("Cantidad de mascotas: "+viaje.cantidadMascotas);
+            mPopupCantM.setText("Cantidad de mascotas: " + viaje.cantidadMascotas);
             if (viaje.viajaAcompanante) mPopupViajaA.setText("Viaja acompañante");
             else mPopupViajaA.setText("No viaja acompañante");
             mPopupViajaA.setVisibility(View.VISIBLE);
@@ -350,7 +375,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             mPopupPrecio.setCompoundDrawablesWithIntrinsicBounds(R.drawable.money, 0, 0, 0);
             NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("es", "AR"));
             String precio = numberFormat.format(viaje.precio);
-            mPopupPrecio.setText("Precio: "+precio+" ("+viaje.formaPago+")");
+            mPopupPrecio.setText("Precio: " + precio + " (" + viaje.formaPago + ")");
             if (viaje.reserva) {
                 mPopupReserva.setCompoundDrawablesWithIntrinsicBounds(R.drawable.date, 0, 0, 0);
                 mPopupReserva.setText(viaje.fecha);
@@ -368,6 +393,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             mPopupButtonAceptar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    acepto = true;
                     if (!viaje.reserva) {
                         mPopupTitle.setText("Viaje en curso");
                         mPopupCantM.setVisibility(View.GONE);
@@ -480,6 +506,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
             mPopupButtonCancelar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    acepto = true;
                     Map<String, Object> data = new HashMap<>();
                     data.put("viajeid", viaje.id);
                     data.put("rechazaDriver", true);
