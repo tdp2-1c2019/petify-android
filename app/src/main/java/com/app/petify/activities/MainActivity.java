@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                                 } else if (!usuario.tienePerfilCompleto()) {
                                     navigationIntent = new Intent(MainActivity.this, CargarPerfilActivity.class);
                                 } else if (usuario.isCustomer) {
-                                    navigationIntent = new Intent(MainActivity.this, MapsActivity.class);
+                                    navigationIntent = new Intent(MainActivity.this, PasajeroActivity.class);
                                 } else if (!usuario.cargoImagenes()) { // Si esta registrado y no es customer, es driver
                                     navigationIntent = new Intent(MainActivity.this, DriverPicturesActivity.class);
                                 } else {

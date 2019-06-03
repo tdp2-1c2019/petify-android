@@ -119,7 +119,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
             public void onClick(View v) {
                 mDatabase.child("viajes").child(viajeId).child("puntaje_chofer").setValue(puntajeStars);
 //                mDatabase.child("calificaciones").child(choferId).child(viajeId).child("puntaje").setValue(puntajeStars);
-                Intent intent = new Intent(getBaseContext(), MapsActivity.class);
+                Intent intent = new Intent(getBaseContext(), PasajeroActivity.class);
                 startActivity(intent);
             }
         });
@@ -159,7 +159,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                                 mFunctions.getHttpsCallable("cancelarViaje").call(data).continueWith(new Continuation<HttpsCallableResult, Object>() {
                                     @Override
                                     public Object then(@NonNull Task<HttpsCallableResult> task) throws Exception {
-                                        Intent intent = new Intent(getBaseContext(), MapsActivity.class);
+                                        Intent intent = new Intent(getBaseContext(), PasajeroActivity.class);
                                         startActivity(intent);
                                         return null;
                                     }
@@ -247,7 +247,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                         mRechazarButton.setVisibility(View.GONE);
                         break;
                     case Viaje.RECHAZADO:
-                        Intent intent = new Intent(getBaseContext(), MapsActivity.class);
+                        Intent intent = new Intent(getBaseContext(), PasajeroActivity.class);
                         startActivity(intent);
                         break;
                     case Viaje.CANCELADO_GRUPO:
@@ -266,7 +266,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Intent i = new Intent(ViajeCursoActivity.this, MapsActivity.class);
+                                        Intent i = new Intent(ViajeCursoActivity.this, PasajeroActivity.class);
                                         startActivity(i);
                                     }
                                 }, 2000);
@@ -341,7 +341,7 @@ public class ViajeCursoActivity extends FragmentActivity implements OnMapReadyCa
         mCancelarBusqueda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), MapsActivity.class);
+                Intent intent = new Intent(getBaseContext(), PasajeroActivity.class);
                 startActivity(intent);
             }
         });

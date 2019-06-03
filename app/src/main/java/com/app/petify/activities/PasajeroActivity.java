@@ -7,11 +7,16 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.akexorcist.googledirection.DirectionCallback;
 import com.akexorcist.googledirection.GoogleDirection;
@@ -19,6 +24,7 @@ import com.akexorcist.googledirection.model.Direction;
 import com.akexorcist.googledirection.model.Leg;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.app.petify.R;
+import com.facebook.Profile;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -44,7 +50,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class PasajeroActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
     private int LOCATION_PERMISSION = 2;
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -61,11 +67,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private AutocompleteSupportFragment mDestinationAutocompleteFragment;
     private Button mCargarViaje;
 
+    private NavigationView navView;
+    private TextView drawerTitle;
+    private MenuItem itemInicio;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
-
+        setContentView(R.layout.activity_pasajero);
+        navView = findViewById(R.id.pasajero_nav_view);
+        navView.setNavigationItemSelectedListener(this);
+        drawerTitle = navView.getHeaderView(0).findViewById(R.id.nav_header_title);
+        drawerTitle.setText("Hola " + Profile.getCurrentProfile().getFirstName() + "!");
+        itemInicio = navView.getMenu().getItem(0);
+        SpannableString s = new SpannableString(itemInicio.getTitle());
+        s.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getBaseContext(), R.color.com_facebook_blue)), 0, s.length(), 0);
+        itemInicio.setTitle(s);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -169,7 +186,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 duration = leg.getDuration().getText();
                                 distance = leg.getDistance().getText();
                                 ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
-                                PolylineOptions polylineOptions = DirectionConverter.createPolyline(MapsActivity.this, directionPositionList, 5, Color.BLUE);
+                                PolylineOptions polylineOptions = DirectionConverter.createPolyline(PasajeroActivity.this, directionPositionList, 5, Color.BLUE);
                                 // Dibujamos el recorrido
                                 trip = mMap.addPolyline(polylineOptions);
                                 // Zoomeamos el recorrido
@@ -196,8 +213,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // Check for Location permissions
-        if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION);
+        if (ContextCompat.checkSelfPermission(PasajeroActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(PasajeroActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION);
         }
 
         mMap = googleMap;
@@ -231,5 +248,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        Intent i = null;
+        if (id == R.id.nav_item_perfil)
+            i = new Intent(this, PerfilActivity.class);
+        if (id == R.id.nav_item_viajes)
+            i = new Intent(this, MyTrips.class);
+        startActivity(i);
+        return false;
     }
 }

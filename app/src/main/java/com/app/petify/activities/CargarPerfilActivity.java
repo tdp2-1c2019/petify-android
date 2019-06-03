@@ -107,7 +107,7 @@ public class CargarPerfilActivity extends AppCompatActivity implements OnMapRead
 
                 Intent navigationIntent;
                 if (usuario.isCustomer) {
-                    navigationIntent = new Intent(CargarPerfilActivity.this, MapsActivity.class);
+                    navigationIntent = new Intent(CargarPerfilActivity.this, PasajeroActivity.class);
                 } else if (!usuario.cargoImagenes()) {
                     navigationIntent = new Intent(CargarPerfilActivity.this, DriverPicturesActivity.class);
                 } else {
