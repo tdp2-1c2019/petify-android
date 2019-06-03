@@ -93,7 +93,7 @@ public class CargarViajeActivity extends AppCompatActivity {
                     viaje.fecha = mDiaReserva.getText() + " " + mHoraReserva.getText();
                     viaje.reserva = true;
                 }
-                if (LocalDateTime.now().isBefore(LocalDateTime.parse(viaje.fecha, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")))) {
+                if (LocalDateTime.now().isBefore(LocalDateTime.parse(viaje.fecha, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"))) || !viaje.reserva) {
                     mLLFechaReserva.setBackgroundResource(0);
                     mLLHoraReserva.setBackgroundResource(0);
                     sumMascotas = Integer.parseInt(mCantidadMascotasP.getSelectedItem().toString()) + Integer.parseInt(mCantidadMascotasM.getSelectedItem().toString()) + Integer.parseInt(mCantidadMascotasG.getSelectedItem().toString());
