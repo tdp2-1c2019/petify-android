@@ -28,7 +28,7 @@ import com.akexorcist.googledirection.model.Direction;
 import com.akexorcist.googledirection.model.Leg;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.app.petify.R;
-import com.app.petify.models.Client;
+import com.app.petify.models.Usuario;
 import com.app.petify.models.Viaje;
 import com.facebook.Profile;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -103,7 +103,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
     private DatabaseReference mDatabase;
     private Polyline tripYendo;
     private Polyline tripViaje;
-    private Client pasajero;
+    private Usuario pasajero;
     private String pasajeroName;
     private String fbid;
     private FirebaseFunctions mFunctions;
@@ -231,15 +231,15 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                     mDatabase.child("customers").child(viaje.pasajero).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            pasajero = dataSnapshot.getValue(Client.class);
+                            pasajero = dataSnapshot.getValue(Usuario.class);
                             pasajeroName = pasajero.name;
+                            procesarViaje();
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                         }
                     });
-                    procesarViaje();
                 }
             }
 
@@ -353,9 +353,9 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                 }
             }, 30000);
             if (viaje.reserva)
-                mPopupTitle.setText("Nueva reserva");
+                mPopupTitle.setText("Nueva reserva cargada por " + pasajeroName + "(" + pasajero.puntuacion + "★)");
             else
-                mPopupTitle.setText("Nuevo viaje");
+                mPopupTitle.setText("Nuevo viaje cargada por " + pasajeroName + "(" + pasajero.puntuacion + "★)");
             mPopupText.setVisibility(View.GONE);
             mDisponibleCard.setVisibility(View.VISIBLE);
             mPopupOrigen.setVisibility(View.VISIBLE);
@@ -445,7 +445,7 @@ public class DriverHomeActivity extends AppCompatActivity implements OnMapReadyC
                                                 mPopupOrigen.setVisibility(View.GONE);
                                                 mPopupDestino.setVisibility(View.GONE);
                                                 mPopupText.setVisibility(View.VISIBLE);
-                                                mPopupText.setText("Califica a " + pasajeroName);
+                                                mPopupText.setText("Califica a " + pasajeroName + "(" + pasajero.puntuacion + "★)");
                                                 mPopupButtonAceptar.setVisibility(View.GONE);
                                                 mPopupButtonAvanzar.setVisibility(View.GONE);
                                                 mPopupButtonCancelar.setVisibility(View.GONE);
