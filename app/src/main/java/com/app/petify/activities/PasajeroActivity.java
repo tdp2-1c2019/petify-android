@@ -37,7 +37,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -55,7 +54,6 @@ public class PasajeroActivity extends FragmentActivity implements OnMapReadyCall
 
     private FusedLocationProviderClient fusedLocationClient;
 
-    private Marker choferMarker;
     private Place origin;
     private Place destination;
     private Polyline trip;

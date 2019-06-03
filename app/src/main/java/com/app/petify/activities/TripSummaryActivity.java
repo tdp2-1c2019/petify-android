@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akexorcist.googledirection.DirectionCallback;
@@ -29,10 +31,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TripSummaryActivity extends FragmentActivity implements OnMapReadyCallback {
     private DatabaseReference mDatabase;
@@ -48,6 +56,10 @@ public class TripSummaryActivity extends FragmentActivity implements OnMapReadyC
     Boolean admin = false;
     GoogleMap mMap;
     Polyline trip;
+    LinearLayout llstars;
+    Button cancelarReserva;
+    TextView reservaCancelada;
+    FirebaseFunctions mFunctions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +70,9 @@ public class TripSummaryActivity extends FragmentActivity implements OnMapReadyC
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.sumMap);
         mapFragment.getMapAsync(this);
+        cancelarReserva = findViewById(R.id.cancelar_reserva);
+        mFunctions = FirebaseFunctions.getInstance();
+        reservaCancelada = findViewById(R.id.reserva_cancelada);
         from = findViewById(R.id.summary_from);
         from.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dot, 0, 0, 0);
         from.setText(viaje.origin_address);
@@ -107,35 +122,26 @@ public class TripSummaryActivity extends FragmentActivity implements OnMapReadyC
                 marcarEstrellas(5, admin);
             }
         });
-        if (viaje.chofer.equals(Profile.getCurrentProfile().getId())) {
-            if (viaje.puntaje_pasajero != 0)
-                marcarEstrellas(viaje.puntaje_pasajero, true);
-            else {
-                admin = true;
-                marcarEstrellas(3, true);
-                calificar.setVisibility(View.VISIBLE);
-                calificar.setOnClickListener(new View.OnClickListener() {
+        llstars = findViewById(R.id.sumllstars);
+        if (!viaje.reserva)
+            initStars();
+        else {
+            llstars.setVisibility(View.GONE);
+            if (viaje.pasajero.equals(Profile.getCurrentProfile().getId())) {
+                cancelarReserva.setVisibility(View.VISIBLE);
+                cancelarReserva.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mDatabase.child("viajes").child(viaje.id).child("puntaje_pasajero").setValue(puntajeStars);
-                        mDatabase.child("calificaciones").child(viaje.pasajero).child(viaje.id).child("puntaje").setValue(puntajeStars);
-                        calificar.setVisibility(View.GONE);
-                    }
-                });
-            }
-        } else {
-            if (viaje.puntaje_chofer != 0)
-                marcarEstrellas(viaje.puntaje_chofer, true);
-            else {
-                admin = true;
-                marcarEstrellas(3, true);
-                calificar.setVisibility(View.VISIBLE);
-                calificar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mDatabase.child("viajes").child(viaje.id).child("puntaje_chofer").setValue(puntajeStars);
-                        mDatabase.child("calificaciones").child(viaje.chofer).child(viaje.id).child("puntaje").setValue(puntajeStars);
-                        calificar.setVisibility(View.GONE);
+                        cancelarReserva.setVisibility(View.GONE);
+                        reservaCancelada.setVisibility(View.VISIBLE);
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("viajeid", viaje.id);
+                        mFunctions.getHttpsCallable("cancelarReserva").call(data).continueWith(new Continuation<HttpsCallableResult, Object>() {
+                            @Override
+                            public Object then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                                return null;
+                            }
+                        });
                     }
                 });
             }
@@ -193,5 +199,41 @@ public class TripSummaryActivity extends FragmentActivity implements OnMapReadyC
                     public void onDirectionFailure(Throwable t) {
                     }
                 });
+    }
+
+    private void initStars() {
+        if (viaje.chofer.equals(Profile.getCurrentProfile().getId())) {
+            if (viaje.puntaje_pasajero != 0)
+                marcarEstrellas(viaje.puntaje_pasajero, true);
+            else {
+                admin = true;
+                marcarEstrellas(3, true);
+                calificar.setVisibility(View.VISIBLE);
+                calificar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mDatabase.child("viajes").child(viaje.id).child("puntaje_pasajero").setValue(puntajeStars);
+                        mDatabase.child("calificaciones").child(viaje.pasajero).child(viaje.id).child("puntaje").setValue(puntajeStars);
+                        calificar.setVisibility(View.GONE);
+                    }
+                });
+            }
+        } else {
+            if (viaje.puntaje_chofer != 0)
+                marcarEstrellas(viaje.puntaje_chofer, true);
+            else {
+                admin = true;
+                marcarEstrellas(3, true);
+                calificar.setVisibility(View.VISIBLE);
+                calificar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mDatabase.child("viajes").child(viaje.id).child("puntaje_chofer").setValue(puntajeStars);
+                        mDatabase.child("calificaciones").child(viaje.chofer).child(viaje.id).child("puntaje").setValue(puntajeStars);
+                        calificar.setVisibility(View.GONE);
+                    }
+                });
+            }
+        }
     }
 }
