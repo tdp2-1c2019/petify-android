@@ -138,7 +138,7 @@ public class TripSummaryActivity extends FragmentActivity implements OnMapReadyC
 //                                return null;
 //                            }
 //                        });
-                        mDatabase.child("viajes").child(viaje.id).child("estado").setValue(RESERVA_CANCELADA);
+                        mDatabase.child("viajes").child(viaje.id).child("estado").setValue(Viaje.RESERVA_CANCELADA);
                     }
                 });
             }
