@@ -84,7 +84,7 @@ public class MyTrips extends AppCompatActivity implements NavigationView.OnNavig
                         .sorted(new Comparator<Viaje>() {
                             @Override
                             public int compare(Viaje o1, Viaje o2) {
-                                return o1.fecha.compareTo(o2.fecha);
+                                return o2.fecha.compareTo(o1.fecha);
                             }
                         })
                         .collect(Collectors.toList());
