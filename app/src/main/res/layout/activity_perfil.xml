@@ -15,10 +15,132 @@
         tools:context="com.app.petify.activities.PerfilActivity">
 
         <TextView
+            android:id="@+id/profile_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mi perfil"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="16dp"
+            android:text="Petify"
+            android:textAlignment="center"
+            android:textColor="@color/com_facebook_blue"
             android:theme="@style/Title" />
+
+        <LinearLayout
+            android:id="@+id/ll_nombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profile_title"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="Nombre"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:theme="@style/Texto" />
+
+            <TextView
+                android:id="@+id/profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:theme="@style/Texto" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_correo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_nombre"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="Correo"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:theme="@style/Texto" />
+
+            <TextView
+                android:id="@+id/profile_mail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:theme="@style/Texto" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_direc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_correo"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="Direccion"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:theme="@style/Texto" />
+
+            <TextView
+                android:id="@+id/profile_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:theme="@style/Texto" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_tel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_direc"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="Telefono"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:theme="@style/Texto" />
+
+            <TextView
+                android:id="@+id/profile_tel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:theme="@style/Texto" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_rol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_tel"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="Rol"
+                android:textColor="@color/com_facebook_blue"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:theme="@style/Texto" />
+
+            <TextView
+                android:id="@+id/profile_rol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/com_facebook_blue"
+                android:textSize="22dp"
+                android:theme="@style/Texto" />
+        </LinearLayout>
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView
