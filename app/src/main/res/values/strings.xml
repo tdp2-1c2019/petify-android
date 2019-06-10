@@ -1,12 +1,35 @@
 <resources>
+    <string name="app_logo">P</string>
     <string name="app_name">Petify</string>
     <string name="home_client_name">Home Cliente</string>
     <string name="home_driver_name">Home Chofer</string>
+    <string name="conduciendo">Conduciendo</string>
     <string name="home_logout">LogOut</string>
+
+    <string name="driver_button">Driver button</string>
+    <string name="client_button">Client button</string>
+    <string name="user_selection_hint">¿Sos chofer o pasajero?</string>
 
     <string name="facebook_app_id">307179333289046</string>
     <string name="fb_login_protocol_scheme">fb307179333289046</string>
     <string name="error_invalid_login">Ocurrio un error durante el Facebook login</string>
-    <string name="client_type_button_text">Quiero viajar!</string>
-    <string name="driver_type_button_text">Quiero manejar!</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="cantidad_mascotas">Cantidad de mascotas</string>
+    <string name="viaja_acompanante">Viaja acompañante</string>
+    <string name="forma_pago">Forma de pago</string>
+    <string name="solicitar_viaje">Solicitar viaje</string>
+    <string name="observaciones">Observaciones</string>
+    <string name="cargar_viaje">Cargar viaje</string>
+
+    <string-array name="cantM">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="formaP">
+        <item>Efectivo</item>
+        <item>Mercadopago</item>
+    </string-array>
+    <string name="title_activity_cargar_perfil">CargarPerfilActivity</string>
 </resources>

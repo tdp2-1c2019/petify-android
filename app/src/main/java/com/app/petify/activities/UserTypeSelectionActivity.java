@@ -6,103 +6,86 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.app.petify.R;
 import com.app.petify.models.Client;
 import com.app.petify.models.Driver;
+import com.app.petify.models.Usuario;
 import com.app.petify.models.responses.UserResponse;
 import com.app.petify.services.AuthenticationService;
 import com.app.petify.utils.LocalStorage;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class UserTypeSelectionActivity extends AppCompatActivity {
+    private Usuario usuario;
+
+    private Snackbar mSnackbar;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_type_selection);
 
-        Button clientTypeButton = this.findViewById(R.id.client_type_button);
+        ImageButton clientTypeButton = this.findViewById(R.id.client_type_button);
         clientTypeButton.setOnClickListener(new ClientTypeButtonHandler());
 
-        Button driverTypeButton = this.findViewById(R.id.driver_type_button);
+        ImageButton driverTypeButton = this.findViewById(R.id.driver_type_button);
         driverTypeButton.setOnClickListener(new DriverTypeButtonHandler());
+
+        usuario = LocalStorage.getUsuario();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mSnackbar.dismiss();
     }
 
     protected class ClientTypeButtonHandler implements View.OnClickListener {
-        public void onClick(View v){
-            new ClientSignUpTask().execute();
+        public void onClick(View v) {
+            mSnackbar = Snackbar.make(findViewById(R.id.user_type_selection), "Registrando cliente...", Snackbar.LENGTH_INDEFINITE);
+            mSnackbar.show();
+
+            // Creamos el user en la db
+            DatabaseReference customerReference = mDatabase.child("customers").child(usuario.fbid);
+            customerReference.child("fbid").setValue(usuario.fbid);
+            customerReference.child("habilitado").setValue(usuario.disponible);
+            customerReference.child("email").setValue(usuario.email);
+            customerReference.child("name").setValue(usuario.name);
+
+            usuario.isCustomer = true;
+
+            // Vamos al home del usuario
+            Intent navigationIntent = new Intent(UserTypeSelectionActivity.this, CargarPerfilActivity.class);
+            startActivity(navigationIntent);
         }
     }
 
     protected class DriverTypeButtonHandler implements View.OnClickListener {
-        public void onClick(View v){
-            new DriverSignUpTask().execute();
+        public void onClick(View v) {
+            mSnackbar = Snackbar.make(findViewById(R.id.user_type_selection), "Registrando chofer...", Snackbar.LENGTH_INDEFINITE);
+            mSnackbar.show();
+
+            // Creamos el user en la db
+            DatabaseReference driverReference = mDatabase.child("drivers").child(usuario.fbid);
+            driverReference.child("fbid").setValue(usuario.fbid);
+            driverReference.child("cargoAuto").setValue(usuario.cargoAuto);
+            driverReference.child("cargoRegistro").setValue(usuario.cargoRegistro);
+            driverReference.child("cargoSeguro").setValue(usuario.cargoSeguro);
+            driverReference.child("disponible").setValue(usuario.disponible);
+            driverReference.child("email").setValue(usuario.email);
+            driverReference.child("habilitado").setValue(usuario.habilitado);
+            driverReference.child("name").setValue(usuario.name);
+
+            usuario.isDriver = true;
+
+            // Vamos a cargar el perfil del chofer
+            Intent navigationIntent = new Intent(UserTypeSelectionActivity.this, CargarPerfilActivity.class);
+            startActivity(navigationIntent);
         }
     }
-
-    protected class ClientSignUpTask extends AsyncTask<String, Void, UserResponse<Client>> {
-        private AuthenticationService authenticationService = new AuthenticationService();
-        private Snackbar snackbar;
-
-        protected void onPreExecute() {
-            this.snackbar.show();
-        }
-
-        public ClientSignUpTask() {
-            this.snackbar = Snackbar.make(findViewById(R.id.user_type_selection), "Registrando cliente...", Snackbar.LENGTH_INDEFINITE);
-        }
-
-        protected UserResponse<Client> doInBackground(String... params) {
-            String facebookId = LocalStorage.getFacebookId();
-            return authenticationService.registerClient(facebookId, "");
-        }
-
-        protected void onPostExecute(UserResponse<Client> response) {
-            this.snackbar.dismiss();
-
-            UserResponse.ServiceStatusCode statusCode = response.getStatusCode();
-            if (statusCode == UserResponse.ServiceStatusCode.SUCCESS){
-                Client client = response.getServiceResponse();
-                LocalStorage.setClient(client);
-                Intent navigationIntent = new Intent(UserTypeSelectionActivity.this, ClientHomeActivity.class);
-                startActivity(navigationIntent);
-            } else {
-                this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Ocurrio un error registrando el cliente", Snackbar.LENGTH_SHORT);
-            }
-        }
-    }
-
-    protected class DriverSignUpTask extends AsyncTask<String, Void, UserResponse<Driver>> {
-        private AuthenticationService authenticationService = new AuthenticationService();
-        private Snackbar snackbar;
-
-        protected void onPreExecute() {
-            this.snackbar.show();
-        }
-
-        public DriverSignUpTask() {
-            this.snackbar = Snackbar.make(findViewById(R.id.user_type_selection), "Registrando chofer...", Snackbar.LENGTH_INDEFINITE);
-        }
-
-        protected UserResponse<Driver> doInBackground(String... params) {
-            String facebookId = LocalStorage.getFacebookId();
-            return authenticationService.registerDriver(facebookId);
-        }
-
-        protected void onPostExecute(UserResponse<Driver> response) {
-            this.snackbar.dismiss();
-
-            UserResponse.ServiceStatusCode statusCode = response.getStatusCode();
-            if (statusCode == UserResponse.ServiceStatusCode.SUCCESS) {
-                Driver driver = response.getServiceResponse();
-                LocalStorage.setDriver(driver);
-                Intent navigationIntent = new Intent(UserTypeSelectionActivity.this, DriverHomeActivity.class);
-                startActivity(navigationIntent);
-            } else {
-                this.snackbar = Snackbar.make(findViewById(R.id.main_layout), "Ocurrio un error registrando el chofer", Snackbar.LENGTH_SHORT);
-            }
-        }
-    }
-
 }

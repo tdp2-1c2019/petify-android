@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -16,7 +16,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-
     <style name="Title" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/ps_bold</item>
         <item name="android:textSize">45dp</item>
@@ -29,4 +28,46 @@
         <item name="android:textColor">@color/dark</item>
     </style>
 
+    <style name="Textbox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="colorAccent">@color/dark</item>
+        <item name="boxStrokeColor">@color/white</item>
+        <item name="android:paddingLeft">8dp</item>
+    </style>
+
+    <style name="Texto" parent="android:Widget.TextView">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textColor">@color/dark</item>
+    </style>
+
+    <style name="Spinner">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textColor">@color/com_facebook_blue</item>
+        <item name="android:textAlignment">textEnd</item>
+    </style>
+
+    <style name="Button" parent="android:Widget.Button">
+        <item name="android:backgroundTint">@color/com_facebook_blue</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:fontFamily">@font/ps_bold</item>
+        <item name="android:textSize">15dp</item>
+    </style>
+
+    <style name="ButtonCancel" parent="android:Widget.Button">
+        <item name="android:backgroundTint">@color/red</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:fontFamily">@font/ps_bold</item>
+        <item name="android:textSize">15dp</item>
+    </style>
+
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/grey</color>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="NavigationDrawerStyle">
+        <item name="android:textSize">25sp</item><!-- text size in menu-->
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
 </resources>

@@ -8,13 +8,13 @@
     tools:openDrawer="start">
 
     <include
-        android:id="@+id/driver_include"
-        layout="@layout/activity_home_driver_map"
+        android:id="@+id/pasajero_include"
+        layout="@layout/activity_maps"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <android.support.design.widget.NavigationView
-        android:id="@+id/driver_nav_view"
+        android:id="@+id/pasajero_nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
@@ -23,7 +23,7 @@
         app:menu="@menu/menu">
 
         <Button
-            android:id="@+id/btn_sing_in"
+            android:id="@+id/btn_sing_out"
             style="@style/Button"
             android:layout_width="match_parent"
             android:layout_height="50dp"

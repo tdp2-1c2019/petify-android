@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/user_type_selection"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="2">
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:text="@string/user_selection_hint"
+        android:textAlignment="center"
+        android:textSize="@dimen/font_size_large" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="2">
 
-        <Button
-            android:id="@+id/client_type_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/Subtitle"
-            android:text="@string/client_type_button_text"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center">
-
-        <Button
+        <ImageButton
             android:id="@+id/driver_type_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/Subtitle"
-            android:text="@string/driver_type_button_text"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:background="#C0C0C0"
+            android:contentDescription="@string/driver_button"
+            android:scaleType="centerInside"
+            android:src="@drawable/driver_icon"
+            android:theme="@style/Subtitle" />
 
+        <ImageButton
+            android:id="@+id/client_type_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:background="#C0C0C0"
+            android:contentDescription="@string/client_button"
+            android:scaleType="centerInside"
+            android:src="@drawable/pet_icon"
+            android:theme="@style/Subtitle" />
     </LinearLayout>
-
 </LinearLayout>

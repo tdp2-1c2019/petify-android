@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/rv_item_from"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="5dp"
+        android:drawablePadding="10dp"
+        android:theme="@style/Texto" />
+
+    <TextView
+        android:id="@+id/rv_item_to"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="5dp"
+        android:drawablePadding="10dp"
+        android:theme="@style/Texto" />
+
+    <TextView
+        android:id="@+id/rv_item_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="5dp"
+        android:drawablePadding="10dp"
+        android:theme="@style/Texto" />
+
+    <TextView
+        android:id="@+id/rv_item_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="5dp"
+        android:drawablePadding="10dp"
+        android:theme="@style/Texto" />
+
+    <TextView
+        android:id="@+id/rv_item_status"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
+        android:textStyle="bold"
+        android:theme="@style/Texto" />
+</LinearLayout>
